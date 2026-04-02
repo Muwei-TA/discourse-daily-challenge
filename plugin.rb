@@ -44,6 +44,7 @@ after_initialize do
   require_relative "lib/discourse_daily_challenge/leaderboard_poster"
   require_relative "lib/discourse_daily_challenge/check_in_service"
   require_relative "app/services/discourse_daily_challenge/mention_handler"
+  require_relative "app/services/discourse_daily_challenge/dm_command_handler"
   require_relative "jobs/scheduled/daily_challenge_weekly_post"
   require_relative "jobs/scheduled/daily_challenge_final_post"
   require_relative "app/jobs/scheduled/discourse_daily_challenge_send_reminders"
@@ -65,6 +66,7 @@ after_initialize do
   on(:post_created) do |post|
     next unless SiteSetting.daily_challenge_enabled
     DiscourseDailyChallenge::MentionHandler.handle(post)
+    DiscourseDailyChallenge::DmCommandHandler.handle(post)
   end
 
   on(:post_revised) do |post|
