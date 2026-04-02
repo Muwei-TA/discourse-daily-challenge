@@ -1,6 +1,6 @@
 # Discourse Daily Challenge
 
-![Version](https://img.shields.io/badge/version-v1.4.0-blue)
+![Version](https://img.shields.io/badge/version-v1.5.0-blue)
 
 A Discourse plugin for running time-limited challenges. Participants check in by posting with a challenge hashtag or uploading a photo. Admins and moderators get a real-time leaderboard dashboard, automated weekly progress posts, a final results announcement, optional badge awards for completers, and a bot user that sends personal DMs for check-in confirmations, reminders, and @mention commands.
 
@@ -27,7 +27,8 @@ _Screenshots coming soon._
 - **Moderator access** — full moderators can access challenge management via a dedicated sidebar section with Dashboard and Challenges tabs
 - **Category Moderator Access** — category moderators can manage challenges in their assigned categories via a dedicated /challenges route, separate from the admin panel
 - **Per-challenge configuration** — each challenge has its own hashtag, dates, timezone, check-in interval, check-in goal, weekly post schedule, and badge settings
-- **🤖 ChallengeBot DMs** — check-in confirmation DMs with streak info and a clickable topic link, reminder DMs for participants who haven't checked in (daily: after 2+ missed days; weekly: on the last day of the week if not yet checked in), and @mention commands for personal stats — all sent as private messages from a configurable bot account
+- **🤖 ChallengeBot DMs** — check-in confirmation DMs with streak info and a clickable topic link, reminder DMs for participants who haven't checked in (daily: after 2+ missed days; weekly: on the last day of the week if not yet checked in), and commands for personal stats via @mention in the challenge topic or direct message — all sent as private messages from a configurable bot account
+- **Edit detection** — if a participant edits a post to add the challenge hashtag or an image, a check-in is automatically recorded using the original post date (within 24 hours for daily challenges, or within the same week for weekly challenges)
 
 ## Installation
 
@@ -137,18 +138,35 @@ A Redis key with a 25-hour TTL prevents duplicate reminders per user per challen
 
 ## @ChallengeBot Commands
 
-Members can mention the bot in any active challenge topic to receive a DM with their stats. Commands are never replied to in the topic — responses are always sent as private messages.
+Commands can be triggered two ways:
+
+- **@mention in a challenge topic** — mention the bot followed by the command (e.g. `@ChallengeBot streak`). The bot never replies in the topic — responses are always sent as a private message.
+- **Direct message** — send a DM directly to ChallengeBot, or reply to any existing ChallengeBot DM thread. Type just the command word with no @mention needed (e.g. `streak`).
 
 | Command | Description |
 |---|---|
-| `@ChallengeBot status` | Stats across all active challenges you've participated in |
-| `@ChallengeBot leaderboard` | Current top-10 standings for this challenge |
-| `@ChallengeBot streak` | Your current streak for this challenge |
-| `@ChallengeBot checkins` | Full list of all your check-in dates for this challenge |
-| `@ChallengeBot progress` | Check-ins done vs needed, time remaining, on-track status |
-| `@ChallengeBot help` | List all available commands |
+| `status` | Stats across all active challenges you've participated in |
+| `leaderboard` | Current top-10 standings for this challenge |
+| `streak` | Your current streak for this challenge |
+| `checkins` | Full list of all your check-in dates for this challenge |
+| `progress` | Check-ins done vs needed, time remaining, on-track status |
+| `help` | List all available commands |
 
-> **Rate limit:** commands are limited to 10 per user per hour. If exceeded, the bot sends a single notice and ignores further commands until the window resets.
+### Challenge picker
+
+When using DM commands, the bot needs to know which challenge you're asking about:
+
+- **0 active challenges** — the bot replies that you're not part of any active challenges
+- **1 active challenge** — the bot responds immediately
+- **2+ active challenges** — the bot presents a numbered list; reply with the number to select a challenge, or **A** to get results for all challenges. The selection prompt expires after 5 minutes.
+
+`status` and `help` always respond immediately regardless of how many challenges you're in.
+
+> **Rate limit:** commands are limited to 10 per user per hour across both @mention and DM triggers. If exceeded, the bot sends a single notice and ignores further commands until the window resets.
+
+### Recommended site setting
+
+Discourse's **Minimum personal message post length** setting (`min_personal_message_post_length`) defaults to 1 character, but if your site has raised it, short commands like `status` may be blocked. Set it to 1 or low enough to allow single-word messages in DMs with ChallengeBot.
 
 ## Admin Dashboard
 
@@ -213,7 +231,7 @@ Manually added check-ins are marked with an "Admin" source label in the check-in
 
 ## Roadmap
 
-### v1.5.0
+### v1.6.0
 
 _Planned features TBD._
 
@@ -231,6 +249,11 @@ _Planned features TBD._
 MIT License. See [LICENSE](LICENSE) for details.
 
 ## Changelog
+
+### v1.5.0
+- **Edit detection** — if a participant edits a post to add the challenge hashtag or an image, a check-in is automatically recorded using the original post's creation date; daily challenges accept edits within 24 hours, weekly challenges accept edits within the current challenge week
+- **DM commands** — users can now send ChallengeBot commands by DMing the bot directly or by replying to any existing ChallengeBot DM thread, with no @mention required; commands (`status`, `leaderboard`, `streak`, `checkins`, `progress`, `help`) work identically to the @mention versions
+- **Challenge picker** — when a user is in multiple active challenges, DM commands present a numbered list to select which challenge to query; reply with a number or **A** for all; single-challenge users get an immediate response; `status` and `help` always respond immediately
 
 ### v1.4.1
 - **First check-in welcome DM** — members receive a special welcome message on their first check-in for a challenge
