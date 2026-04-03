@@ -71,6 +71,20 @@ cs:
         many: "%{count}-week streak"
         other: "%{count}-week streak"
       mention_dm_title: "Re: %{command} — %{challenge_name}"
+      dm:
+        no_active_challenges: "You're not part of any active challenges."
+        picker_prompt: |
+          You're in multiple active challenges. Reply with a number to select one, or **A** for all:
+
+          %{challenges}
+
+          Command: `%{command}`
+        picker_invalid: |
+          Please reply with a valid number or **A** for all. Here are your challenges:
+
+          %{challenges}
+
+          Command: `%{command}`
       commands:
         status_header: "**Your active challenge status:**"
         status_row: "- **%{challenge}** — %{check_ins} check-ins · %{streak} · %{pct}% complete"
