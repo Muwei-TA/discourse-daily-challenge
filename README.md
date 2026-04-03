@@ -40,7 +40,7 @@ hooks:
     - exec:
         cd: $home/plugins
         cmd:
-          - git clone https://github.com/R23DPrinting/discourse-daily-challenge.git
+          - git clone https://gitlab.com/r23dprinting-group/discourse-daily-challenge.git
 ```
 
 Then rebuild your container:
