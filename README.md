@@ -1,3 +1,5 @@
+> ⚠️ **This repository has moved to GitLab.** Please update your `app.yml` to point to the new URL. See the README for details.
+
 # Discourse Daily Challenge
 
 ![Version](https://img.shields.io/badge/version-v1.5.0-blue)
