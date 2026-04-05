@@ -85,6 +85,9 @@ es:
           source_post: "Publicar"
           remove: "Eliminar"
           confirm_remove: "¿Eliminar este check-in?"
+          showing: "Showing %{from}–%{to} of %{total} check-ins"
+          previous: "Previous"
+          next: "Next"
         drawing:
           title: "Prize drawing"
           min_checkins: "Minimum check-ins"
