@@ -2,7 +2,7 @@
 
 # name: discourse-daily-challenge
 # about: Run time-limited daily challenges on your Discourse forum. Participants check in by posting with a hashtag or uploading a photo. Admins get a real-time leaderboard dashboard, automated weekly progress posts, and a final results post with optional badge awards.
-# version: 1.5.1
+# version: 1.5.2
 # authors: R23D Printing
 # url: https://gitlab.com/r23dprinting-group/discourse-daily-challenge
 # required_version: 2.7.0

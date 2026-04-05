@@ -513,20 +513,18 @@ export default class AdminDailyChallengeForm extends Component {
           </field.Control>
         </form.Field>
 
-        {{#if (eq this.checkInInterval "weekly")}}
-          <form.Field
-            @name="week_start"
-            @title={{i18n "daily_challenge.admin.form.week_start"}}
-            @type="select"
-            as |field|
-          >
-            <field.Control as |select|>
-              {{#each this.weekStartOptions as |opt|}}
-                <select.Option @value={{opt.value}}>{{opt.name}}</select.Option>
-              {{/each}}
-            </field.Control>
-          </form.Field>
-        {{/if}}
+        <form.Field
+          @name="week_start"
+          @title={{i18n "daily_challenge.admin.form.week_start"}}
+          @type="select"
+          as |field|
+        >
+          <field.Control as |select|>
+            {{#each this.weekStartOptions as |opt|}}
+              <select.Option @value={{opt.value}}>{{opt.name}}</select.Option>
+            {{/each}}
+          </field.Control>
+        </form.Field>
 
         <form.Field
           @name="weekly_post_enabled"

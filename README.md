@@ -2,7 +2,7 @@
 
 # Discourse Daily Challenge
 
-![Version](https://img.shields.io/badge/version-v1.5.1-blue)
+![Version](https://img.shields.io/badge/version-v1.5.2-blue)
 
 A Discourse plugin for running time-limited challenges. Participants check in by posting with a challenge hashtag or uploading a photo. Admins and moderators get a real-time leaderboard dashboard, automated weekly progress posts, a final results announcement, optional badge awards for completers, and a bot user that sends personal DMs for check-in confirmations, reminders, and @mention commands.
 
@@ -235,9 +235,12 @@ Expand any entry to see the details and a link to the original topic.
 
 When **Enable weekly leaderboard post** is turned on for a challenge, the plugin posts a markdown leaderboard table to the challenge topic every week at the configured day and hour (in the challenge's timezone). The post is made by the system user and includes:
 
-- The week's date range
+- The post heading uses the challenge topic title (e.g. "Weekly March Reading Challenge Update")
+- The week's date range, clamped so it never shows dates before the challenge start
 - Current day progress in the challenge
-- A ranked table of all participants with their check-in count, goal, and progress percentage
+- A ranked table of all participants with their check-in count, goal, and progress percentage, using rank numbers (1. 2. 3.)
+
+The week date range boundaries are determined by the **Week start** field, regardless of whether the challenge uses a daily or weekly check-in interval.
 
 You can also trigger a leaderboard post manually at any time from the challenge detail page using the **Post leaderboard now** button.
 
@@ -291,6 +294,13 @@ _Planned features TBD._
 MIT License. See [LICENSE](LICENSE) for details.
 
 ## Changelog
+
+### v1.5.2
+- **Dynamic post titles** — weekly leaderboard posts now use "Weekly [topic title] Update" and final results posts use "[topic title] — Final Results 🏆" instead of hardcoded strings
+- **Rank numbers in weekly posts** — weekly leaderboard posts now use plain rank numbers (1. 2. 3.) instead of medal emojis; medals (🥇🥈🥉) are kept for the final results post only
+- **Week date range clamped to challenge start** — the "Week of …" range shown in weekly posts no longer extends before the challenge start date
+- **Week start day applies to all challenge types** — the Week start field (Sunday/Monday/Saturday) is now shown and respected for both daily and weekly interval challenges when calculating the weekly post date range
+- **Community-neutral language** — removed fitness-specific emojis (🏋️→🏆 in weekly post header, 💪 replaced or removed in DM strings) and "fitness" wording from the final results post, reminder DMs, and badge descriptions so the plugin works naturally for any type of challenge community
 
 ### v1.5.1
 - **Prize drawing** — admins, full mods, and category mods can generate a filtered list of eligible participants for prize drawings; filter by minimum check-in count and optional date range. Available via the admin challenge edit page (Prize Drawing section) and as a `drawing [min_checkins] [start_date] [end_date]` DM command to ChallengeBot. Multi-challenge managers are prompted to select a challenge first.
