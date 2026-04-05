@@ -44,14 +44,6 @@ module DiscourseDailyChallenge
 
       total_check_ins = DailyCheckIn.where(challenge_id: challenge.id, user_id: user.id).count
 
-      if total_check_ins == 1
-        Jobs.enqueue(
-          :discourse_daily_challenge_send_onboarding_dm,
-          user_id: user.id,
-          challenge_id: challenge.id,
-        )
-      end
-
       Jobs.enqueue(
         :discourse_daily_challenge_send_checkin_dm,
         user_id: user.id,
@@ -128,14 +120,6 @@ module DiscourseDailyChallenge
       clear_reminder_keys(challenge, user.id)
 
       total_check_ins = DailyCheckIn.where(challenge_id: challenge.id, user_id: user.id).count
-
-      if total_check_ins == 1
-        Jobs.enqueue(
-          :discourse_daily_challenge_send_onboarding_dm,
-          user_id: user.id,
-          challenge_id: challenge.id,
-        )
-      end
 
       Jobs.enqueue(
         :discourse_daily_challenge_send_checkin_dm,
