@@ -85,6 +85,15 @@ es:
           source_post: "Publicar"
           remove: "Eliminar"
           confirm_remove: "¿Eliminar este check-in?"
+        drawing:
+          title: "Prize drawing"
+          min_checkins: "Minimum check-ins"
+          start_date: "Start date (optional)"
+          end_date: "End date (optional)"
+          generate: "Generate list"
+          eligible_count:
+            one: "1 participant eligible"
+            other: "%{count} participants eligible"
       dashboard:
         title: "Tablero"
         day_progress: "Día %{elapsed} de %{total}"
