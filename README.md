@@ -2,7 +2,7 @@
 
 # Discourse Daily Challenge
 
-![Version](https://img.shields.io/badge/version-v1.5.0-blue)
+![Version](https://img.shields.io/badge/version-v1.5.1-blue)
 
 A Discourse plugin for running time-limited challenges. Participants check in by posting with a challenge hashtag or uploading a photo. Admins and moderators get a real-time leaderboard dashboard, automated weekly progress posts, a final results announcement, optional badge awards for completers, and a bot user that sends personal DMs for check-in confirmations, reminders, and @mention commands.
 
@@ -31,6 +31,7 @@ _Screenshots coming soon._
 - **Per-challenge configuration** — each challenge has its own hashtag, dates, timezone, check-in interval, check-in goal, weekly post schedule, and badge settings
 - **🤖 ChallengeBot DMs** — check-in confirmation DMs with streak info and a clickable topic link, reminder DMs for participants who haven't checked in (daily: after 2+ missed days; weekly: on the last day of the week if not yet checked in), and commands for personal stats via @mention in the challenge topic or direct message — all sent as private messages from a configurable bot account
 - **Edit detection** — if a participant edits a post to add the challenge hashtag or an image, a check-in is automatically recorded using the original post date (within 24 hours for daily challenges, or within the same week for weekly challenges)
+- **Prize drawing** — admins and moderators can generate a copyable list of eligible participants filtered by minimum check-ins and optional date range, via the admin panel or a ChallengeBot DM command
 
 ## Installation
 
@@ -152,6 +153,7 @@ Commands can be triggered two ways:
 | `streak` | Your current streak for this challenge |
 | `checkins` | Full list of all your check-in dates for this challenge |
 | `progress` | Check-ins done vs needed, time remaining, on-track status |
+| `drawing [min_checkins] [start_date] [end_date]` | Generate a list of participants eligible for a prize drawing (admins/mods/category mods only) |
 | `help` | List all available commands |
 
 ### Challenge picker
@@ -169,6 +171,44 @@ When using DM commands, the bot needs to know which challenge you're asking abou
 ### Recommended site setting
 
 Discourse's **Minimum personal message post length** setting (`min_personal_message_post_length`) defaults to 1 character, but if your site has raised it, short commands like `status` may be blocked. Set it to 1 or low enough to allow single-word messages in DMs with ChallengeBot.
+
+## Prize Drawing
+
+The prize drawing feature lets challenge managers generate a filtered list of eligible participants for giveaways or prize selection. Access is restricted to admins, full moderators, and category moderators who manage the relevant challenge.
+
+### Admin panel
+
+On each challenge's edit page (**Admin → Plugins → Challenges → Challenges → [challenge name]**), a **Prize Drawing** section appears at the bottom with three filter fields:
+
+| Field | Description |
+|---|---|
+| **Minimum check-ins** | Only participants with this many or more check-ins are included. Defaults to 1. |
+| **Start date** | Optional. Only count check-ins on or after this date (YYYY-MM-DD). |
+| **End date** | Optional. Only count check-ins on or before this date (YYYY-MM-DD). |
+
+Click **Generate** to produce a scrollable, read-only textarea containing one `@username` per line followed by the eligible participant count. Click anywhere in the textarea to select all text for copying.
+
+### DM command
+
+Challenge managers can also run prize drawings via DM to ChallengeBot:
+
+```
+drawing [min_checkins] [start_date] [end_date]
+```
+
+All arguments are optional. Examples:
+
+| Command | Effect |
+|---|---|
+| `drawing` | All participants with at least 1 check-in |
+| `drawing 5` | Participants with 5 or more check-ins |
+| `drawing 5 2026-03-01 2026-03-31` | Participants with 5+ check-ins within March 2026 |
+
+Dates must be in `YYYY-MM-DD` format. The bot responds with one `@username` per line and a count of eligible participants.
+
+If you manage multiple active challenges, the bot will ask you to select which challenge before running the drawing. Reply with the challenge number or **A** for all challenges.
+
+Users without challenge management permissions receive an access-denied message.
 
 ## Admin Dashboard
 
@@ -251,6 +291,9 @@ _Planned features TBD._
 MIT License. See [LICENSE](LICENSE) for details.
 
 ## Changelog
+
+### v1.5.1
+- **Prize drawing** — admins, full mods, and category mods can generate a filtered list of eligible participants for prize drawings; filter by minimum check-in count and optional date range. Available via the admin challenge edit page (Prize Drawing section) and as a `drawing [min_checkins] [start_date] [end_date]` DM command to ChallengeBot. Multi-challenge managers are prompted to select a challenge first.
 
 ### v1.5.0
 - **Edit detection** — if a participant edits a post to add the challenge hashtag or an image, a check-in is automatically recorded using the original post's creation date; daily challenges accept edits within 24 hours, weekly challenges accept edits within the current challenge week
