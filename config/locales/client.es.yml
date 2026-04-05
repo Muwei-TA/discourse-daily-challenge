@@ -45,6 +45,8 @@ es:
           check_ins_needed: "Se necesitan ingresos"
           description: "Descripción (opcional)"
           description_placeholder: "Describe el desafío…"
+          welcome_message: "Welcome message (optional)"
+          welcome_message_placeholder: "Add a rules link, tips, or anything else members should know..."
           weekly_post_enabled: "Activar publicación semanal del marcador"
           weekly_post_day: "Día de entrada de la semana"
           weekly_post_hour: "Hora de entrada (0-23, zona horaria de desafío)"
