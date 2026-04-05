@@ -76,6 +76,10 @@ zh-TW:
           %{challenges}
 
           Command: `%{command}`
+        drawing_no_access: "You don't have permission to run prize drawings. This command is only available to challenge managers."
+        drawing_none: "No participants in %{challenge} meet the minimum of %{min_checkins} check-ins."
+        drawing_count:
+          other: "%{count} participants eligible"
       commands:
         status_header: "**Your active challenge status:**"
         status_row: "- **%{challenge}** — %{check_ins} check-ins · %{streak} · %{pct}% complete"
