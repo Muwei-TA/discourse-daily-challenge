@@ -75,6 +75,7 @@ export default class AdminDailyChallengeForm extends Component {
         check_in_interval: c.check_in_interval ?? "daily",
         week_start: c.week_start ?? "monday",
         reminder_dms_enabled: c.reminder_dms_enabled ?? true,
+        welcome_message: c.welcome_message ?? "",
       };
     }
     return {
@@ -93,6 +94,7 @@ export default class AdminDailyChallengeForm extends Component {
       check_in_interval: "daily",
       week_start: "monday",
       reminder_dms_enabled: true,
+      welcome_message: "",
     };
   }
 
@@ -495,6 +497,18 @@ export default class AdminDailyChallengeForm extends Component {
           <field.Control
             placeholder={{i18n "daily_challenge.admin.form.description_placeholder"}}
             rows="3"
+          />
+        </form.Field>
+
+        <form.Field
+          @name="welcome_message"
+          @title={{i18n "daily_challenge.admin.form.welcome_message"}}
+          @type="textarea"
+          as |field|
+        >
+          <field.Control
+            placeholder={{i18n "daily_challenge.admin.form.welcome_message_placeholder"}}
+            rows="4"
           />
         </form.Field>
 

@@ -208,6 +208,7 @@ class DiscourseDailyChallenge::AdminDailyChallengesController < Admin::AdminCont
       :check_in_interval,
       :week_start,
       :reminder_dms_enabled,
+      :welcome_message,
     )
   end
 

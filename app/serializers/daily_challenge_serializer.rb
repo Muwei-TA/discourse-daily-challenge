@@ -24,7 +24,8 @@ class DailyChallengeSerializer < ApplicationSerializer
              :check_in_interval,
              :week_start,
              :category_id,
-             :reminder_dms_enabled
+             :reminder_dms_enabled,
+             :welcome_message
 
   def topic_url
     object.topic&.relative_url
