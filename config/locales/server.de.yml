@@ -29,8 +29,6 @@ de:
     bot:
       onboarding_dm_title: "Welcome to the %{challenge_name} challenge!"
       onboarding_dm_body: |
-        🎉 Welcome to the **%{challenge_name}** challenge!
-
         You're in! Here's what you need to know:
 
         - **Hashtag:** #%{hashtag}
