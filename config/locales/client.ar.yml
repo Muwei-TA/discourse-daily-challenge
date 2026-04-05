@@ -85,6 +85,19 @@ ar:
           source_post: "Post"
           remove: "Remove"
           confirm_remove: "Remove this check-in?"
+        drawing:
+          title: "Prize drawing"
+          min_checkins: "Minimum check-ins"
+          start_date: "Start date (optional)"
+          end_date: "End date (optional)"
+          generate: "Generate list"
+          eligible_count:
+            zero: "%{count} participants eligible"
+            one: "1 participant eligible"
+            two: "%{count} participants eligible"
+            few: "%{count} participants eligible"
+            many: "%{count} participants eligible"
+            other: "%{count} participants eligible"
       dashboard:
         title: "Dashboard"
         day_progress: "Day %{elapsed} of %{total}"
