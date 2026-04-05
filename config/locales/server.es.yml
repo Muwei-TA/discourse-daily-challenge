@@ -4,7 +4,6 @@ es:
       already_exists: "Ya existe un check-in para este usuario en esa fecha."
       already_exists_this_week: "Ya existe un check-in para este usuario durante esa semana."
     weekly_post:
-      title: "Leaderboard Semanal Fitness Challenge"
       period: "Semana de %{start} – %{finish}"
       days_elapsed: "Día **%{elapsed}** de **%{total}**"
       user: "Participante"
@@ -14,16 +13,15 @@ es:
       no_participants: "*No hay cheques grabados todavía. ¡Sé el primero!*"
       footer: "¡Sigue adelante! Usa el hashtag o publica una foto para registrarte. 🔥"
     final_post:
-      title: "Desafío completado — Resultados finales :trofeo:"
-      intro: "El desafío de fitness **#%{hashtag}** ha terminado. ¡Aquí están los resultados finales!"
+      intro: "The **#%{hashtag}** challenge has ended. Here are the final results!"
       eligible_header: "### Participantes que completaron el desafío"
-      row: "- @%{username} — Check-ins %{count}"
+      row: "- %{medal}@%{username} — %{count} check-ins"
       congrats: "🏆 Felicitaciones a todos los que han completado el desafío!"
       no_completions: "*Ningún participante ha alcanzado la meta de check-in de %{needed} esta vez. ¡Gracias a todos los que participaron!*"
       summary: "**%{completed} de %{total} participantes** completó el desafío alcanzando %{needed} check-ins."
     badge:
       description_with_topic: "Otorgada a los participantes que hayan completado todos los Check-ins requeridos en %{title}."
-      description_fallback: "Otorgado por completar con éxito un desafío de fitness."
+      description_fallback: "Awarded for successfully completing a challenge."
     errors:
       access_denied: "No tienes permiso para gestionar este desafío."
       badge_name_required: "El nombre de la insignia es necesario cuando se otorga una insignia de terminación."
@@ -36,9 +34,9 @@ es:
         Tu racha actual: **%{streak_text}** 🔥
         Progreso: **%{check_ins} de %{needed}** Check-ins completadas
       checkin_dm_body_first: |
-        🎉 ¡Bienvenido al desafío! Tu primer check-in para %{topic_link} ha sido registrado. Buen comienzo, ¡sigue así!
+        🎉 Welcome to the challenge! Your first check-in for %{topic_link} has been recorded. Great start — keep it up!
 
-        Necesitas **%{needed}** entradas para completar el challenge. ¡Tienes esto! 💪
+        You need **%{needed}** check-ins to complete the challenge. You've got this! ✨
       completion_dm_title: "¡Desafío completado! 🏆"
       completion_dm_body_with_badge: |
         🏆 Amazing work! You've completed the %{topic_link} challenge with **%{check_ins}**!
@@ -55,7 +53,7 @@ es:
       reminder_dm_body: |
         👋 ¡Hola! No te hemos visto registrarte en %{topic_link} desde hace unos días. Tienes **%{checkin_count}** hasta ahora — necesitas **%{needed}** para completar el desafío. ¡No te rindas!
       reminder_dm_body_2: |
-        👋 Ha pasado una semana desde tu último check-in en %{topic_link}. ¡No es demasiado tarde para saltar! Tienes **%{checkin_count}** hacia tu objetivo de **%{needed}**. ¡Nos encantaría verte de vuelta! 💪
+        👋 It's been a week since your last check-in in %{topic_link}. It's not too late to jump back in! You have **%{checkin_count}** toward your goal of **%{needed}**. We'd love to see you back!
       rate_limit_dm_title: "¡Despacio!"
       rate_limit_dm_body: "Estás enviando comandos demasiado rápido. Por favor, espera un rato antes de intentarlo de nuevo."
       streak_day:
@@ -109,7 +107,7 @@ es:
           one: "1 semana restante"
           other: "%{count} weeks remaining"
         progress_on_track: "En la pista ✅"
-        progress_behind: "Behind — ¡recogela! 💪"
+        progress_behind: "Behind — keep going! ⏩"
         progress_complete: "¡Objetivo alcanzado! 🏆"
         unknown_command: "Comando desconocido. Esto es lo que puedo hacer:"
         help: |
