@@ -85,6 +85,9 @@ tr:
           source_post: "Post"
           remove: "Remove"
           confirm_remove: "Remove this check-in?"
+          showing: "Showing %{from}–%{to} of %{total} check-ins"
+          previous: "Previous"
+          next: "Next"
         drawing:
           title: "Prize drawing"
           min_checkins: "Minimum check-ins"
