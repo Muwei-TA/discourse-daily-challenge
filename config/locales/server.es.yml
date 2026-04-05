@@ -27,6 +27,23 @@ es:
       badge_name_required: "El nombre de la insignia es necesario cuando se otorga una insignia de terminación."
       category_access_denied: "Sólo puedes crear desafíos en categorías que moderes."
     bot:
+      onboarding_dm_title: "Welcome to the %{challenge_name} challenge!"
+      onboarding_dm_body: |
+        🎉 Welcome to the **%{challenge_name}** challenge!
+
+        You're in! Here's what you need to know:
+
+        - **Hashtag:** #%{hashtag}
+        - **Check-ins needed:** %{check_ins_needed}
+        - **Challenge ends:** %{end_date}
+
+        **@%{bot_username} commands** — reply to this message or DM me anytime:
+        - `status` — your stats across all active challenges
+        - `progress` — check-ins vs goal, time remaining
+        - `leaderboard` — current standings
+        - `streak` — your current streak
+        - `checkins` — all your check-in dates
+        - `help` — show all commands
       checkin_dm_title: "Check-in confirmado!"
       checkin_dm_body: |
         ✅ Check-in grabado para %{topic_link}!
