@@ -26,7 +26,7 @@ module DiscourseDailyChallenge
       rows = build_leaderboard_rows(challenge, use_medals: false)
 
       header = <<~MD
-        ## 🏆 Weekly #{challenge.topic.title} Update
+        #{I18n.t("daily_challenge.weekly_post.heading", title: challenge.topic.title)}
 
         **#{I18n.t("daily_challenge.weekly_post.period", start: week_start.strftime("%b %-d"), finish: week_end.strftime("%b %-d, %Y"))}**
 

@@ -81,7 +81,7 @@ module Jobs
       completed = eligible.size
 
       lines = []
-      lines << "## #{challenge.topic.title} — Final Results 🏆"
+      lines << I18n.t("daily_challenge.final_post.heading", title: challenge.topic.title)
       lines << ""
       lines << I18n.t("daily_challenge.final_post.intro", hashtag: challenge.hashtag)
       lines << ""
