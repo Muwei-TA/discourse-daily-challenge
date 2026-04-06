@@ -1,123 +1,109 @@
 pt:
   daily_challenge:
     check_in:
-      already_exists: "A check-in for this user on that date already exists."
-      already_exists_this_week: "A check-in for this user already exists during that week."
+      already_exists: "Já existe um check-in para este usuário nessa data."
+      already_exists_this_week: "Já existe um check-in para este usuário nesta semana."
     weekly_post:
-      title: "Weekly Fitness Challenge Leaderboard"
-      period: "Week of %{start} – %{finish}"
-      days_elapsed: "Day **%{elapsed}** of **%{total}**"
-      user: "Participant"
+      title: "Ranking Semanal do Desafio da Semana
+      period: "Semana de %{start} – %{finish}"
+      days_elapsed: "Dia **%{elapsed}** de **%{total}**"
+      user: "Participante"
       check_ins: "Check-ins"
-      goal: "Goal"
-      progress: "Progress"
-      no_participants: "*No check-ins recorded yet. Be the first!*"
-      footer: "Keep going! Use the hashtag or post a photo to check in. 🔥"
+      goal: "Meta"
+      progress: "Progresso"
+      no_participants: "*Nenhum check-in registrado ainda. Seja o primeiro!*"
+      footer: "Continue assim! Use a hashtag ou poste uma foto para fazer o check-in. 🔥"
     final_post:
-      title: "Challenge Complete — Final Results 🏆"
-      intro: "The **#%{hashtag}** fitness challenge has ended. Here are the final results!"
-      eligible_header: "### Participants who completed the challenge"
+      title: "Desafio Concluído — Resultados Finais 🏆"
+      intro: "O desafio da semana **#%{hashtag}** terminou. Aqui estão os resultados finais!"
+      eligible_header: "### Participantes que concluíram o desafio"
       row: "- @%{username} — %{count} check-ins"
-      congrats: "🏆 Congratulations to everyone who completed the challenge!"
-      no_completions: "*No participants reached the %{needed} check-in goal this time. Thanks to everyone who participated!*"
-      summary: "**%{completed} out of %{total} participants** completed the challenge by reaching %{needed} check-ins."
+      congrats: "🏆 Parabéns a todos que concluíram o desafio!"
+      no_completions: "*Nenhum participante atingiu a meta de %{needed} check-ins desta vez. Obrigado a todos que participaram!*"
+      summary: "**%{completed} de %{total} participantes** concluíram o desafio ao atingir %{needed} check-ins."
     badge:
-      description_with_topic: "Awarded to participants who completed all required check-ins in %{title}."
-      description_fallback: "Awarded for successfully completing a fitness challenge."
+      description_with_topic: "Concedido aos participantes que concluíram todos os check-ins obrigatórios em %{title}."
+      description_fallback: "Concedido por concluir com sucesso um desafio fitness."
     errors:
-      access_denied: "You do not have permission to manage this challenge."
-      badge_name_required: "Badge name is required when awarding a completion badge."
-      category_access_denied: "You can only create challenges in categories you moderate."
+      access_denied: "Você não tem permissão para gerenciar este desafio."
+      badge_name_required: "O nome do emblema é obrigatório ao conceder um emblema de conclusão."
+      category_access_denied: "Você só pode criar desafios nas categorias que você modera."
     bot:
-      checkin_dm_title: "Check-in confirmed!"
+      checkin_dm_title: "Check-in confirmado!"
       checkin_dm_body: |
-        ✅ Check-in recorded for %{topic_link}!
+        ✅ Check-in registrado para %{topic_link}!
 
-        Your current streak: **%{streak_text}** 🔥
-        Progress: **%{check_ins} of %{needed}** check-ins completed
+        Sua sequência atual: **%{streak_text}** 🔥
+        Progresso: **%{check_ins} de %{needed}** check-ins concluídos
       checkin_dm_body_first: |
-        🎉 Welcome to the challenge! Your first check-in for %{topic_link} has been recorded. Great start — keep it up!
+        🎉 Bem-vindo(a) ao desafio! Seu primeiro check-in para %{topic_link} foi registrado. Ótimo começo — continue assim!
 
-        You need **%{needed}** check-ins to complete the challenge. You've got this! 💪
-      completion_dm_title: "Challenge complete! 🏆"
+        Você precisa de **%{needed}** check-ins para concluir o desafio. Você consegue! 💪
+      completion_dm_title: "Desafio concluído! 🏆"
       completion_dm_body_with_badge: |
-        🏆 Amazing work! You've completed the %{topic_link} challenge with **%{check_ins}**!
+        🏆 Trabalho incrível! Você concluiu o desafio %{topic_link} com **%{check_ins}**!
 
-        You've qualified for the **%{badge_name}** badge — it will be awarded when the challenge ends. Incredible effort! 🎉
+        Você se qualificou para o emblema **%{badge_name}** — ele será concedido quando o desafio terminar. Esforço incrível! 🎉
       completion_dm_body: |
-        🏆 Amazing work! You've completed the %{topic_link} challenge with **%{check_ins}**!
+        🏆 Trabalho incrível! Você concluiu o desafio %{topic_link} com **%{check_ins}**!
 
-        Incredible effort — congratulations on finishing strong! 🎉
-      reminder_dm_title: "Don't forget to check in — %{challenge_name}"
+        Esforço incrível — parabéns por terminar com tudo! 🎉
+      reminder_dm_title: "Não se esqueça de fazer o check-in — %{challenge_name}"
       checkin_count:
         one: "1 check-in"
         other: "%{count} check-ins"
       reminder_dm_body: |
-        👋 Hey! We haven't seen you check in to %{topic_link} for a few days. You have **%{checkin_count}** so far — you need **%{needed}** to complete the challenge. Don't give up!
+        👋 Ei! Não vemos você fazer check-in no %{topic_link} há alguns dias. Você tem **%{checkin_count}** até agora — você precisa de **%{needed}** para concluir o desafio. Não desista!
       reminder_dm_body_2: |
-        👋 It's been a week since your last check-in in %{topic_link}. It's not too late to jump back in! You have **%{checkin_count}** toward your goal of **%{needed}**. We'd love to see you back! 💪
-      rate_limit_dm_title: "Slow down!"
-      rate_limit_dm_body: "You're sending commands too quickly. Please wait a while before trying again."
+        👋 Já faz uma semana desde o seu último check-in no %{topic_link}. Não é tarde demais para voltar! Você tem **%{checkin_count}** para a sua meta de **%{needed}**. Adoraríamos ver você de volta! 💪
+      rate_limit_dm_title: "Vá com calma!"
+      rate_limit_dm_body: "Você está enviando comandos rápido demais. Por favor, aguarde um momento antes de tentar novamente."
       streak_day:
-        one: "1-day streak"
-        other: "%{count}-day streak"
+        one: "Sequência de 1 dia"
+        other: "Sequência de %{count} dias"
       streak_week:
-        one: "1-week streak"
-        other: "%{count}-week streak"
+        one: "Sequência de 1 semana"
+        other: "Sequência de %{count} semanas"
       mention_dm_title: "Re: %{command} — %{challenge_name}"
-      dm:
-        no_active_challenges: "You're not part of any active challenges."
-        picker_prompt: |
-          You're in multiple active challenges. Reply with a number to select one, or **A** for all:
-
-          %{challenges}
-
-          Command: `%{command}`
-        picker_invalid: |
-          Please reply with a valid number or **A** for all. Here are your challenges:
-
-          %{challenges}
-
-          Command: `%{command}`
       commands:
-        status_header: "**Your active challenge status:**"
-        status_row: "- **%{challenge}** — %{check_ins} check-ins · %{streak} · %{pct}% complete"
-        status_none: "You haven't participated in any active challenges yet."
-        leaderboard_header: "**Current leaderboard for %{challenge}** (top 10):"
+        status_header: "**Status do seu desafio ativo:**"
+        status_row: "- **%{challenge}** — %{check_ins} check-ins · %{streak} · %{pct}% concluído"
+        status_none: "Você ainda não participou de nenhum desafio ativo."
+        leaderboard_header: "**Ranking atual de %{challenge}** (top 10):"
         leaderboard_row: "%{rank}. @%{username} — %{count} check-ins"
-        leaderboard_none: "No check-ins recorded yet."
-        streak_message: "Your current streak in **%{challenge}**: **%{streak_text}** 🔥"
-        streak_none: "You haven't checked in to **%{challenge}** yet."
-        checkins_header: "**Your check-ins for %{challenge}** (%{count} total):"
+        leaderboard_none: "Nenhum check-in registrado ainda."
+        streak_message: "Sua sequência atual em **%{challenge}**: **%{streak_text}** 🔥"
+        streak_none: "Você ainda não fez check-in em **%{challenge}**."
+        checkins_header: "**Seus check-ins para %{challenge}** (%{count} no total):"
         checkins_row: "- %{date}"
-        checkins_none: "No check-ins recorded yet."
+        checkins_none: "Nenhum check-in registrado ainda."
         progress_message: |
-          **Progress for %{challenge}**
+          **Progresso para %{challenge}**
 
           - Check-ins: %{done} / %{needed}
           - %{time_remaining}
           - Status: %{status}
         progress_time_remaining_day:
-          one: "1 day remaining"
-          other: "%{count} days remaining"
+          one: "1 dia restante"
+          other: "%{count} dias restantes"
         progress_time_remaining_week:
-          one: "1 week remaining"
-          other: "%{count} weeks remaining"
-        progress_on_track: "On track ✅"
-        progress_behind: "Behind — pick it up! 💪"
-        progress_complete: "Goal reached! 🏆"
-        unknown_command: "Unknown command. Here's what I can do:"
+          one: "1 semana restante"
+          other: "%{count} semanas restantes"
+        progress_on_track: "No caminho certo ✅"
+        progress_behind: "Atrasado — vamos lá! 💪"
+        progress_complete: "Meta alcançada! 🏆"
+        unknown_command: "Comando desconhecido. Aqui está o que eu posso fazer:"
         help: |
-          **@%{bot_username} commands:**
+          **Comandos de @%{bot_username}:**
 
-          - `status` — your stats across all active challenges
-          - `leaderboard` — top 10 for this challenge
-          - `streak` — your current streak
-          - `checkins` — all your check-in dates
-          - `progress` — check-ins done vs needed, time remaining
-          - `help` — show this message
+          - `status` — suas estatísticas em todos os desafios ativos
+          - `leaderboard` — top 10 deste desafio
+          - `streak` — sua sequência atual
+          - `checkins` — todas as suas datas de check-in
+          - `progress` — check-ins concluídos vs necessários, tempo restante
+          - `help` — mostra esta mensagem
   site_settings:
-    daily_challenge_enabled: "Discourse Challenges enabled"
-    daily_challenge_mod_access_enabled: "Discourse Challenges mod access enabled"
-    daily_challenge_category_mod_access_enabled: "Discourse Challenges category mod access enabled"
-    daily_challenge_bot_username: "Bot username for check-in confirmations, reminders, and @mention commands (leave blank to disable). Username is case-sensitive — enter it exactly as it appears in Discourse."
+    daily_challenge_enabled: "Discourse Desafios habilitados"
+    daily_challenge_mod_access_enabled: "Acesso de moderador ao Discourse Desafios habilitado"
+    daily_challenge_category_mod_access_enabled: "Acesso de moderador de categoria ao Discourse Desafios"
+    daily_challenge_bot_username: "Nome de usuário do bot para confirmações de check-in, lembretes e comandos via menção @ (deixe em branco para desabilitar). O nome de usuário diferencia maiúsculas de minúsculas — insira-o exatamente como aparece no Discourse."
