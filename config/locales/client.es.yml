@@ -45,6 +45,8 @@ es:
           check_ins_needed: "Se necesitan ingresos"
           description: "Descripción (opcional)"
           description_placeholder: "Describe el desafío…"
+          welcome_message: "Welcome message (optional)"
+          welcome_message_placeholder: "Add a rules link, tips, or anything else members should know..."
           weekly_post_enabled: "Activar publicación semanal del marcador"
           weekly_post_day: "Día de entrada de la semana"
           weekly_post_hour: "Hora de entrada (0-23, zona horaria de desafío)"
@@ -85,6 +87,18 @@ es:
           source_post: "Publicar"
           remove: "Eliminar"
           confirm_remove: "¿Eliminar este check-in?"
+          showing: "Showing %{from}–%{to} of %{total} check-ins"
+          previous: "Previous"
+          next: "Next"
+        drawing:
+          title: "Prize drawing"
+          min_checkins: "Minimum check-ins"
+          start_date: "Start date (optional)"
+          end_date: "End date (optional)"
+          generate: "Generate list"
+          eligible_count:
+            one: "1 participant eligible"
+            other: "%{count} participants eligible"
       dashboard:
         title: "Tablero"
         day_progress: "Día %{elapsed} de %{total}"

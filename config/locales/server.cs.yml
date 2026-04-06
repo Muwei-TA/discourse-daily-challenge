@@ -4,7 +4,6 @@ cs:
       already_exists: "A check-in for this user on that date already exists."
       already_exists_this_week: "A check-in for this user already exists during that week."
     weekly_post:
-      title: "Weekly Fitness Challenge Leaderboard"
       period: "Week of %{start} – %{finish}"
       days_elapsed: "Day **%{elapsed}** of **%{total}**"
       user: "Participant"
@@ -14,21 +13,35 @@ cs:
       no_participants: "*No check-ins recorded yet. Be the first!*"
       footer: "Keep going! Use the hashtag or post a photo to check in. 🔥"
     final_post:
-      title: "Challenge Complete — Final Results 🏆"
-      intro: "The **#%{hashtag}** fitness challenge has ended. Here are the final results!"
+      intro: "The **#%{hashtag}** challenge has ended. Here are the final results!"
       eligible_header: "### Participants who completed the challenge"
-      row: "- @%{username} — %{count} check-ins"
+      row: "- %{medal}@%{username} — %{count} check-ins"
       congrats: "🏆 Congratulations to everyone who completed the challenge!"
       no_completions: "*No participants reached the %{needed} check-in goal this time. Thanks to everyone who participated!*"
       summary: "**%{completed} out of %{total} participants** completed the challenge by reaching %{needed} check-ins."
     badge:
       description_with_topic: "Awarded to participants who completed all required check-ins in %{title}."
-      description_fallback: "Awarded for successfully completing a fitness challenge."
+      description_fallback: "Awarded for successfully completing a challenge."
     errors:
       access_denied: "You do not have permission to manage this challenge."
       badge_name_required: "Badge name is required when awarding a completion badge."
       category_access_denied: "You can only create challenges in categories you moderate."
     bot:
+      onboarding_dm_title: "Welcome to the %{challenge_name} challenge!"
+      onboarding_dm_body: |
+        You're in! Here's what you need to know:
+
+        - **Hashtag:** #%{hashtag}
+        - **Check-ins needed:** %{check_ins_needed}
+        - **Challenge ends:** %{end_date}
+
+        **@%{bot_username} commands** — reply to this message or DM me anytime:
+        - `status` — your stats across all active challenges
+        - `progress` — check-ins vs goal, time remaining
+        - `leaderboard` — current standings
+        - `streak` — your current streak
+        - `checkins` — all your check-in dates
+        - `help` — show all commands
       checkin_dm_title: "Check-in confirmed!"
       checkin_dm_body: |
         ✅ Check-in recorded for %{topic_link}!
@@ -38,7 +51,7 @@ cs:
       checkin_dm_body_first: |
         🎉 Welcome to the challenge! Your first check-in for %{topic_link} has been recorded. Great start — keep it up!
 
-        You need **%{needed}** check-ins to complete the challenge. You've got this! 💪
+        You need **%{needed}** check-ins to complete the challenge. You've got this! ✨
       completion_dm_title: "Challenge complete! 🏆"
       completion_dm_body_with_badge: |
         🏆 Amazing work! You've completed the %{topic_link} challenge with **%{check_ins}**!
@@ -57,7 +70,7 @@ cs:
       reminder_dm_body: |
         👋 Hey! We haven't seen you check in to %{topic_link} for a few days. You have **%{checkin_count}** so far — you need **%{needed}** to complete the challenge. Don't give up!
       reminder_dm_body_2: |
-        👋 It's been a week since your last check-in in %{topic_link}. It's not too late to jump back in! You have **%{checkin_count}** toward your goal of **%{needed}**. We'd love to see you back! 💪
+        👋 It's been a week since your last check-in in %{topic_link}. It's not too late to jump back in! You have **%{checkin_count}** toward your goal of **%{needed}**. We'd love to see you back!
       rate_limit_dm_title: "Slow down!"
       rate_limit_dm_body: "You're sending commands too quickly. Please wait a while before trying again."
       streak_day:
@@ -85,6 +98,13 @@ cs:
           %{challenges}
 
           Command: `%{command}`
+        drawing_no_access: "You don't have permission to run prize drawings. This command is only available to challenge managers."
+        drawing_none: "No participants in %{challenge} meet the minimum of %{min_checkins} check-ins."
+        drawing_count:
+          one: "1 participant eligible"
+          few: "%{count} participants eligible"
+          many: "%{count} participants eligible"
+          other: "%{count} participants eligible"
       commands:
         status_header: "**Your active challenge status:**"
         status_row: "- **%{challenge}** — %{check_ins} check-ins · %{streak} · %{pct}% complete"
@@ -114,7 +134,7 @@ cs:
           many: "%{count} weeks remaining"
           other: "%{count} weeks remaining"
         progress_on_track: "On track ✅"
-        progress_behind: "Behind — pick it up! 💪"
+        progress_behind: "Behind — keep going! ⏩"
         progress_complete: "Goal reached! 🏆"
         unknown_command: "Unknown command. Here's what I can do:"
         help: |

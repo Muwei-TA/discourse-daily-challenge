@@ -45,6 +45,8 @@ de:
           check_ins_needed: "Check-ins needed"
           description: "Description (optional)"
           description_placeholder: "Describe the challenge…"
+          welcome_message: "Welcome message (optional)"
+          welcome_message_placeholder: "Add a rules link, tips, or anything else members should know..."
           weekly_post_enabled: "Enable weekly leaderboard post"
           weekly_post_day: "Post day of week"
           weekly_post_hour: "Post hour (0-23, challenge timezone)"
@@ -85,6 +87,18 @@ de:
           source_post: "Post"
           remove: "Remove"
           confirm_remove: "Remove this check-in?"
+          showing: "Showing %{from}–%{to} of %{total} check-ins"
+          previous: "Previous"
+          next: "Next"
+        drawing:
+          title: "Prize drawing"
+          min_checkins: "Minimum check-ins"
+          start_date: "Start date (optional)"
+          end_date: "End date (optional)"
+          generate: "Generate list"
+          eligible_count:
+            one: "1 participant eligible"
+            other: "%{count} participants eligible"
       dashboard:
         title: "Dashboard"
         day_progress: "Day %{elapsed} of %{total}"
