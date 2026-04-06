@@ -67,23 +67,23 @@ Then rebuild your container:
 
 The bot features are optional. To enable them:
 
-1. **Create the bot user account.** SSH into your server and run:
+1. **Create the bot user account.** Register a new account through your forum's standard sign-up flow using a dedicated email address (e.g. `challengebot@yourdomain.com`). Set the username to `ChallengeBot` (or whatever you prefer) during registration.
+
+   Alternatively, you can create the account via the CLI if you prefer not to go through the registration flow:
    ```bash
    cd /var/discourse
    ./launcher enter app
    rake admin:create
    ```
-   When prompted, enter the bot's email, a strong password, and answer **n** to admin privileges.
+   When prompted, enter the bot's email, a strong password, and answer **n** to admin privileges. The account will be created with an auto-generated username — update it to `ChallengeBot` afterwards.
 
-2. **Approve the account and set trust level.** In **Admin → Users**, find the newly created account (it will have an auto-generated username like `user1`) and:
+2. **Approve the account and set trust level.** In **Admin → Users**, find the bot account and:
    - Click **Approve** to approve the account
    - Set **Trust Level** to **1**
 
-3. **Set the username.** The account will have an auto-generated username. Go to the account's profile and update the username to `ChallengeBot` (or whatever you prefer).
+3. **Optionally** set a profile picture for the bot account.
 
-4. **Optionally** set a profile picture for the bot account.
-
-5. **Configure the plugin.** Go to **Admin → Plugins → Challenges → Settings** and enter the username in the **Bot username** field.
+4. **Configure the plugin.** Go to **Admin → Plugins → Challenges → Settings** and enter the username in the **Bot username** field.
    > ⚠️ This field is case-sensitive — enter the username exactly as it appears in the profile.
 
 If no bot username is configured, all bot features are silently disabled and challenges continue to work normally.
