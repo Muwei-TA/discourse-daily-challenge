@@ -26,13 +26,24 @@ module Jobs
       check_ins = DailyCheckIn.where(challenge_id: challenge.id, user_id: user.id).count
       needed = challenge.check_ins_needed
 
+      bot_username = SiteSetting.daily_challenge_bot_username.presence || bot.username
+
       raw =
         if check_ins == 1
+          onboarding = I18n.t(
+            "daily_challenge.bot.onboarding_dm_body",
+            challenge_name: challenge_name,
+            hashtag: challenge.hashtag,
+            check_ins_needed: needed,
+            end_date: challenge.end_date.strftime("%B %-d, %Y"),
+            bot_username: bot_username,
+          )
+          onboarding = "#{onboarding}\n\n#{challenge.welcome_message}" if challenge.welcome_message.present?
           I18n.t(
             "daily_challenge.bot.checkin_dm_body_first",
             topic_link: topic_link,
             needed: needed,
-          )
+          ) + "\n\n---\n\n" + onboarding
         else
           streak = DiscourseDailyChallenge::ChallengeUtils.user_streak(challenge, user.id)
           streak_text =
@@ -50,9 +61,16 @@ module Jobs
           )
         end
 
+      title =
+        if check_ins == 1
+          I18n.t("daily_challenge.bot.onboarding_dm_title", challenge_name: challenge_name)
+        else
+          I18n.t("daily_challenge.bot.checkin_dm_title")
+        end
+
       PostCreator.create!(
         bot,
-        title: I18n.t("daily_challenge.bot.checkin_dm_title"),
+        title: title,
         raw: raw,
         archetype: Archetype.private_message,
         target_usernames: [user.username],

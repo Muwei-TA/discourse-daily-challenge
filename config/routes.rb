@@ -20,6 +20,8 @@ Discourse::Application.routes.draw do
              "discourse_daily_challenge/admin_daily_challenges#destroy"
     post "/challenges/:id/post_leaderboard" =>
            "discourse_daily_challenge/admin_daily_challenges#post_leaderboard"
+    get "/challenges/:id/drawing" =>
+          "discourse_daily_challenge/admin_daily_challenges#drawing"
 
     get "/challenges/:challenge_id/check_ins" =>
           "discourse_daily_challenge/admin_daily_check_ins#index"
@@ -50,6 +52,8 @@ Discourse::Application.routes.draw do
              "discourse_daily_challenge/admin_daily_challenges#destroy"
     post "/challenges/:id/post_leaderboard" =>
            "discourse_daily_challenge/admin_daily_challenges#post_leaderboard"
+    get "/challenges/:id/drawing" =>
+          "discourse_daily_challenge/admin_daily_challenges#drawing"
 
     get "/challenges/:challenge_id/check_ins" =>
           "discourse_daily_challenge/admin_daily_check_ins#index"

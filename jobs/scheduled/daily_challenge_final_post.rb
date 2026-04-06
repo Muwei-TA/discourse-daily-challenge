@@ -81,7 +81,7 @@ module Jobs
       completed = eligible.size
 
       lines = []
-      lines << "## #{I18n.t("daily_challenge.final_post.title")}"
+      lines << "## #{challenge.topic.title} — Final Results 🏆"
       lines << ""
       lines << I18n.t("daily_challenge.final_post.intro", hashtag: challenge.hashtag)
       lines << ""
@@ -89,9 +89,12 @@ module Jobs
       if eligible.any?
         lines << I18n.t("daily_challenge.final_post.eligible_header")
         lines << ""
-        eligible.each do |entry|
+        eligible.each_with_index do |entry, idx|
+          medal = %w[🥇 🥈 🥉][idx]
+          prefix = medal ? "#{medal} " : ""
           lines << I18n.t(
             "daily_challenge.final_post.row",
+            medal: prefix,
             username: entry[:user].username,
             count: entry[:count],
           )

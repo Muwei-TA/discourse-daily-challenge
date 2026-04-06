@@ -75,6 +75,7 @@ export default class AdminDailyChallengeForm extends Component {
         check_in_interval: c.check_in_interval ?? "daily",
         week_start: c.week_start ?? "monday",
         reminder_dms_enabled: c.reminder_dms_enabled ?? true,
+        welcome_message: c.welcome_message ?? "",
       };
     }
     return {
@@ -93,6 +94,7 @@ export default class AdminDailyChallengeForm extends Component {
       check_in_interval: "daily",
       week_start: "monday",
       reminder_dms_enabled: true,
+      welcome_message: "",
     };
   }
 
@@ -499,6 +501,18 @@ export default class AdminDailyChallengeForm extends Component {
         </form.Field>
 
         <form.Field
+          @name="welcome_message"
+          @title={{i18n "daily_challenge.admin.form.welcome_message"}}
+          @type="textarea"
+          as |field|
+        >
+          <field.Control
+            placeholder={{i18n "daily_challenge.admin.form.welcome_message_placeholder"}}
+            rows="4"
+          />
+        </form.Field>
+
+        <form.Field
           @name="check_in_interval"
           @title={{i18n "daily_challenge.admin.form.check_in_interval"}}
           @validation="required"
@@ -513,20 +527,18 @@ export default class AdminDailyChallengeForm extends Component {
           </field.Control>
         </form.Field>
 
-        {{#if (eq this.checkInInterval "weekly")}}
-          <form.Field
-            @name="week_start"
-            @title={{i18n "daily_challenge.admin.form.week_start"}}
-            @type="select"
-            as |field|
-          >
-            <field.Control as |select|>
-              {{#each this.weekStartOptions as |opt|}}
-                <select.Option @value={{opt.value}}>{{opt.name}}</select.Option>
-              {{/each}}
-            </field.Control>
-          </form.Field>
-        {{/if}}
+        <form.Field
+          @name="week_start"
+          @title={{i18n "daily_challenge.admin.form.week_start"}}
+          @type="select"
+          as |field|
+        >
+          <field.Control as |select|>
+            {{#each this.weekStartOptions as |opt|}}
+              <select.Option @value={{opt.value}}>{{opt.name}}</select.Option>
+            {{/each}}
+          </field.Control>
+        </form.Field>
 
         <form.Field
           @name="weekly_post_enabled"

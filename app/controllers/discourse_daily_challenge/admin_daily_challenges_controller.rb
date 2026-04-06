@@ -6,7 +6,7 @@ class DiscourseDailyChallenge::AdminDailyChallengesController < Admin::AdminCont
   skip_before_action :ensure_admin
   before_action :ensure_challenge_manager
   before_action :check_mod_access
-  before_action :find_and_authorize_challenge, only: %i[show update destroy post_leaderboard]
+  before_action :find_and_authorize_challenge, only: %i[show update destroy post_leaderboard drawing]
 
   def index
     challenges = DailyChallenge.includes(:topic).order(start_date: :desc)
@@ -95,6 +95,35 @@ class DiscourseDailyChallenge::AdminDailyChallengesController < Admin::AdminCont
     render_json_error(e.message)
   end
 
+  def drawing
+    min_checkins = [params[:min_checkins].to_i, 1].max
+
+    scope = DailyCheckIn.where(challenge_id: @challenge.id)
+
+    if params[:start_date].present?
+      begin
+        scope = scope.where("check_in_date >= ?", Date.parse(params[:start_date]))
+      rescue ArgumentError
+        return render_json_error("Invalid start_date", status: :unprocessable_entity)
+      end
+    end
+
+    if params[:end_date].present?
+      begin
+        scope = scope.where("check_in_date <= ?", Date.parse(params[:end_date]))
+      rescue ArgumentError
+        return render_json_error("Invalid end_date", status: :unprocessable_entity)
+      end
+    end
+
+    eligible_user_ids =
+      scope.group(:user_id).having("COUNT(*) >= ?", min_checkins).pluck(:user_id)
+
+    usernames = User.where(id: eligible_user_ids).order(:username).pluck(:username)
+
+    render json: { usernames: usernames, count: usernames.size }
+  end
+
   private
 
   def ensure_challenge_manager
@@ -179,6 +208,7 @@ class DiscourseDailyChallenge::AdminDailyChallengesController < Admin::AdminCont
       :check_in_interval,
       :week_start,
       :reminder_dms_enabled,
+      :welcome_message,
     )
   end
 

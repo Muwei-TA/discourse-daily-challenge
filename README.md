@@ -1,6 +1,8 @@
+> ⚠️ **This repository has moved to GitLab.** Please update your `app.yml` to point to the new URL. See the README for details.
+
 # Discourse Daily Challenge
 
-![Version](https://img.shields.io/badge/version-v1.5.0-blue)
+![Version](https://img.shields.io/badge/version-v1.5.2-blue)
 
 A Discourse plugin for running time-limited challenges. Participants check in by posting with a challenge hashtag or uploading a photo. Admins and moderators get a real-time leaderboard dashboard, automated weekly progress posts, a final results announcement, optional badge awards for completers, and a bot user that sends personal DMs for check-in confirmations, reminders, and @mention commands.
 
@@ -29,6 +31,7 @@ _Screenshots coming soon._
 - **Per-challenge configuration** — each challenge has its own hashtag, dates, timezone, check-in interval, check-in goal, weekly post schedule, and badge settings
 - **🤖 ChallengeBot DMs** — check-in confirmation DMs with streak info and a clickable topic link, reminder DMs for participants who haven't checked in (daily: after 2+ missed days; weekly: on the last day of the week if not yet checked in), and commands for personal stats via @mention in the challenge topic or direct message — all sent as private messages from a configurable bot account
 - **Edit detection** — if a participant edits a post to add the challenge hashtag or an image, a check-in is automatically recorded using the original post date (within 24 hours for daily challenges, or within the same week for weekly challenges)
+- **Prize drawing** — admins and moderators can generate a copyable list of eligible participants filtered by minimum check-ins and optional date range, via the admin panel or a ChallengeBot DM command
 
 ## Installation
 
@@ -40,7 +43,7 @@ hooks:
     - exec:
         cd: $home/plugins
         cmd:
-          - git clone https://github.com/R23DPrinting/discourse-daily-challenge.git
+          - git clone https://gitlab.com/r23dprinting-group/discourse-daily-challenge.git
 ```
 
 Then rebuild your container:
@@ -64,23 +67,23 @@ Then rebuild your container:
 
 The bot features are optional. To enable them:
 
-1. **Create the bot user account.** SSH into your server and run:
+1. **Create the bot user account.** Register a new account through your forum's standard sign-up flow using a dedicated email address (e.g. `challengebot@yourdomain.com`). Set the username to `ChallengeBot` (or whatever you prefer) during registration.
+
+   Alternatively, you can create the account via the CLI if you prefer not to go through the registration flow:
    ```bash
    cd /var/discourse
    ./launcher enter app
    rake admin:create
    ```
-   When prompted, enter the bot's email, a strong password, and answer **n** to admin privileges.
+   When prompted, enter the bot's email, a strong password, and answer **n** to admin privileges. The account will be created with an auto-generated username — update it to `ChallengeBot` afterwards.
 
-2. **Approve the account and set trust level.** In **Admin → Users**, find the newly created account (it will have an auto-generated username like `user1`) and:
+2. **Approve the account and set trust level.** In **Admin → Users**, find the bot account and:
    - Click **Approve** to approve the account
    - Set **Trust Level** to **1**
 
-3. **Set the username.** The account will have an auto-generated username. Go to the account's profile and update the username to `ChallengeBot` (or whatever you prefer).
+3. **Optionally** set a profile picture for the bot account.
 
-4. **Optionally** set a profile picture for the bot account.
-
-5. **Configure the plugin.** Go to **Admin → Plugins → Challenges → Settings** and enter the username in the **Bot username** field.
+4. **Configure the plugin.** Go to **Admin → Plugins → Challenges → Settings** and enter the username in the **Bot username** field.
    > ⚠️ This field is case-sensitive — enter the username exactly as it appears in the profile.
 
 If no bot username is configured, all bot features are silently disabled and challenges continue to work normally.
@@ -150,6 +153,7 @@ Commands can be triggered two ways:
 | `streak` | Your current streak for this challenge |
 | `checkins` | Full list of all your check-in dates for this challenge |
 | `progress` | Check-ins done vs needed, time remaining, on-track status |
+| `drawing [min_checkins] [start_date] [end_date]` | Generate a list of participants eligible for a prize drawing (admins/mods/category mods only) |
 | `help` | List all available commands |
 
 ### Challenge picker
@@ -167,6 +171,44 @@ When using DM commands, the bot needs to know which challenge you're asking abou
 ### Recommended site setting
 
 Discourse's **Minimum personal message post length** setting (`min_personal_message_post_length`) defaults to 1 character, but if your site has raised it, short commands like `status` may be blocked. Set it to 1 or low enough to allow single-word messages in DMs with ChallengeBot.
+
+## Prize Drawing
+
+The prize drawing feature lets challenge managers generate a filtered list of eligible participants for giveaways or prize selection. Access is restricted to admins, full moderators, and category moderators who manage the relevant challenge.
+
+### Admin panel
+
+On each challenge's edit page (**Admin → Plugins → Challenges → Challenges → [challenge name]**), a **Prize Drawing** section appears at the bottom with three filter fields:
+
+| Field | Description |
+|---|---|
+| **Minimum check-ins** | Only participants with this many or more check-ins are included. Defaults to 1. |
+| **Start date** | Optional. Only count check-ins on or after this date (YYYY-MM-DD). |
+| **End date** | Optional. Only count check-ins on or before this date (YYYY-MM-DD). |
+
+Click **Generate** to produce a scrollable, read-only textarea containing one `@username` per line followed by the eligible participant count. Click anywhere in the textarea to select all text for copying.
+
+### DM command
+
+Challenge managers can also run prize drawings via DM to ChallengeBot:
+
+```
+drawing [min_checkins] [start_date] [end_date]
+```
+
+All arguments are optional. Examples:
+
+| Command | Effect |
+|---|---|
+| `drawing` | All participants with at least 1 check-in |
+| `drawing 5` | Participants with 5 or more check-ins |
+| `drawing 5 2026-03-01 2026-03-31` | Participants with 5+ check-ins within March 2026 |
+
+Dates must be in `YYYY-MM-DD` format. The bot responds with one `@username` per line and a count of eligible participants.
+
+If you manage multiple active challenges, the bot will ask you to select which challenge before running the drawing. Reply with the challenge number or **A** for all challenges.
+
+Users without challenge management permissions receive an access-denied message.
 
 ## Admin Dashboard
 
@@ -193,9 +235,12 @@ Expand any entry to see the details and a link to the original topic.
 
 When **Enable weekly leaderboard post** is turned on for a challenge, the plugin posts a markdown leaderboard table to the challenge topic every week at the configured day and hour (in the challenge's timezone). The post is made by the system user and includes:
 
-- The week's date range
+- The post heading uses the challenge topic title (e.g. "Weekly March Reading Challenge Update")
+- The week's date range, clamped so it never shows dates before the challenge start
 - Current day progress in the challenge
-- A ranked table of all participants with their check-in count, goal, and progress percentage
+- A ranked table of all participants with their check-in count, goal, and progress percentage, using rank numbers (1. 2. 3.)
+
+The week date range boundaries are determined by the **Week start** field, regardless of whether the challenge uses a daily or weekly check-in interval.
 
 You can also trigger a leaderboard post manually at any time from the challenge detail page using the **Post leaderboard now** button.
 
@@ -249,6 +294,16 @@ _Planned features TBD._
 MIT License. See [LICENSE](LICENSE) for details.
 
 ## Changelog
+
+### v1.5.2
+- **Dynamic post titles** — weekly leaderboard posts now use "Weekly [topic title] Update" and final results posts use "[topic title] — Final Results 🏆" instead of hardcoded strings
+- **Rank numbers in weekly posts** — weekly leaderboard posts now use plain rank numbers (1. 2. 3.) instead of medal emojis; medals (🥇🥈🥉) are kept for the final results post only
+- **Week date range clamped to challenge start** — the "Week of …" range shown in weekly posts no longer extends before the challenge start date
+- **Week start day applies to all challenge types** — the Week start field (Sunday/Monday/Saturday) is now shown and respected for both daily and weekly interval challenges when calculating the weekly post date range
+- **Community-neutral language** — removed fitness-specific emojis (🏋️→🏆 in weekly post header, 💪 replaced or removed in DM strings) and "fitness" wording from the final results post, reminder DMs, and badge descriptions so the plugin works naturally for any type of challenge community
+
+### v1.5.1
+- **Prize drawing** — admins, full mods, and category mods can generate a filtered list of eligible participants for prize drawings; filter by minimum check-in count and optional date range. Available via the admin challenge edit page (Prize Drawing section) and as a `drawing [min_checkins] [start_date] [end_date]` DM command to ChallengeBot. Multi-challenge managers are prompted to select a challenge first.
 
 ### v1.5.0
 - **Edit detection** — if a participant edits a post to add the challenge hashtag or an image, a check-in is automatically recorded using the original post's creation date; daily challenges accept edits within 24 hours, weekly challenges accept edits within the current challenge week

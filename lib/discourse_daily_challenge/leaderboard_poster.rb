@@ -18,12 +18,15 @@ module DiscourseDailyChallenge
     end
 
     def self.build_post_body(challenge)
-      week_end = Date.current
-      week_start = week_end - 6
-      rows = build_leaderboard_rows(challenge)
+      tz = ActiveSupport::TimeZone[challenge.challenge_timezone] || Time.zone
+      week_end = Time.now.in_time_zone(tz).to_date
+      week_start_day_num = { "sunday" => 0, "monday" => 1, "saturday" => 6 }[challenge.week_start || "monday"]
+      days_since = (week_end.wday - week_start_day_num) % 7
+      week_start = [week_end - days_since, challenge.start_date].max
+      rows = build_leaderboard_rows(challenge, use_medals: false)
 
       header = <<~MD
-        ## 🏋️ #{I18n.t("daily_challenge.weekly_post.title")}
+        ## 🏆 Weekly #{challenge.topic.title} Update
 
         **#{I18n.t("daily_challenge.weekly_post.period", start: week_start.strftime("%b %-d"), finish: week_end.strftime("%b %-d, %Y"))}**
 
@@ -43,7 +46,7 @@ module DiscourseDailyChallenge
       header + body + "\n\n#{I18n.t("daily_challenge.weekly_post.footer")}"
     end
 
-    def self.build_leaderboard_rows(challenge)
+    def self.build_leaderboard_rows(challenge, use_medals: false)
       challenge
         .check_ins
         .group(:user_id)
@@ -57,15 +60,19 @@ module DiscourseDailyChallenge
 
           progress_pct =
             challenge.check_ins_needed > 0 ? ((count.to_f / challenge.check_ins_needed) * 100).round(1) : 0
-          medal =
-            case idx
-            when 0 then "🥇"
-            when 1 then "🥈"
-            when 2 then "🥉"
-            else "#{idx + 1}."
+          rank =
+            if use_medals
+              case idx
+              when 0 then "🥇"
+              when 1 then "🥈"
+              when 2 then "🥉"
+              else "#{idx + 1}."
+              end
+            else
+              "#{idx + 1}."
             end
 
-          "| #{medal} | @#{user.username} | #{count} | #{challenge.check_ins_needed} | #{progress_pct}% |"
+          "| #{rank} | @#{user.username} | #{count} | #{challenge.check_ins_needed} | #{progress_pct}% |"
         end
         .compact
     end
