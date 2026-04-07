@@ -4,7 +4,7 @@ pt:
       already_exists: "Um check-in para este usuário já existe."
       already_exists_this_week: "Já existe um check-in para este usuário durante essa semana."
     weekly_post:
-      heading: "## 🏆 Weekly %{title} Update"
+      heading: "## 🏆 Atualização %{title} Semanal"
       period: "Semana de %{start} – %{finish}"
       days_elapsed: "Dia **%{elapsed}** de **%{total}**"
       user: "Participante"
@@ -14,7 +14,7 @@ pt:
       no_participants: "*Nenhum check-in registrado ainda. Seja o primeiro!*"
       footer: "Continue! Use a hashtag ou publique uma foto para fazer o check-in 🔥"
     final_post:
-      heading: "## %{title} — Final Results 🏆"
+      heading: "## %{title} — Resultados finais 🏆"
       intro: "O desafio **#%{hashtag}** terminou. Aqui estão os resultados finais!"
       eligible_header: "### Usuários que concluíram o desafio"
       row: "- %{medal}@%{username} — Check-ins em %{count}"
