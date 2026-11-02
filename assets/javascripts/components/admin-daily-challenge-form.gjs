@@ -249,7 +249,15 @@ export default class AdminDailyChallengeForm extends Component {
       "Tokelau Is.",
       "Chatham Is.",
       "Samoa",
-    ];
+    ].map((value) => ({
+      value,
+      name: i18n(
+        `daily_challenge.admin.form.timezones.${value
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "_")
+          .replace(/^_|_$/g, "")}`
+      ),
+    }));
   }
 
   get daysOfWeek() {
@@ -473,7 +481,7 @@ export default class AdminDailyChallengeForm extends Component {
         >
           <field.Control as |select|>
             {{#each this.timezones as |tz|}}
-              <select.Option @value={{tz}}>{{tz}}</select.Option>
+              <select.Option @value={{tz.value}}>{{tz.name}}</select.Option>
             {{/each}}
           </field.Control>
         </form.Field>

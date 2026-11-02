@@ -1,135 +1,137 @@
 zh-CN:
   daily_challenge:
     check_in:
-      already_exists: "A check-in for this user on that date already exists."
-      already_exists_this_week: "A check-in for this user already exists during that week."
+      already_exists: "该用户在这一天已有签到记录。"
+      already_exists_this_week: "该用户在这一周已有签到记录。"
     weekly_post:
-      period: "Week of %{start} – %{finish}"
-      days_elapsed: "Day **%{elapsed}** of **%{total}**"
-      user: "Participant"
-      check_ins: "Check-ins"
-      goal: "Goal"
-      progress: "Progress"
-      no_participants: "*No check-ins recorded yet. Be the first!*"
-      footer: "Keep going! Use the hashtag or post a photo to check in. 🔥"
+      heading: "## 🏆 %{title} 每周进展"
+      period: "本周：%{start} 至 %{finish}"
+      days_elapsed: "第 **%{elapsed}** 天，共 **%{total}** 天"
+      user: "参与者"
+      check_ins: "签到次数"
+      goal: "目标"
+      progress: "完成进度"
+      no_participants: "*暂无签到记录，快来成为第一个参与者吧！*"
+      footer: "继续加油！回复签到标签或上传照片即可签到。🔥"
     final_post:
-      intro: "The **#%{hashtag}** challenge has ended. Here are the final results!"
-      eligible_header: "### Participants who completed the challenge"
-      row: "- %{medal}@%{username} — %{count} check-ins"
-      congrats: "🏆 Congratulations to everyone who completed the challenge!"
-      no_completions: "*No participants reached the %{needed} check-in goal this time. Thanks to everyone who participated!*"
-      summary: "**%{completed} out of %{total} participants** completed the challenge by reaching %{needed} check-ins."
+      heading: "## %{title} — 最终成绩 🏆"
+      intro: "**#%{hashtag}** 挑战已结束，以下是最终成绩！"
+      eligible_header: "### 完成挑战的参与者"
+      row: "- %{medal}@%{username} — 签到 %{count} 次"
+      congrats: "🏆 恭喜所有完成挑战的参与者！"
+      no_completions: "*本次没有参与者达到 %{needed} 次签到的目标，感谢大家的参与！*"
+      summary: "**%{total} 位参与者中有 %{completed} 位**达到 %{needed} 次签到的目标，完成了挑战。"
     badge:
-      description_with_topic: "Awarded to participants who completed all required check-ins in %{title}."
-      description_fallback: "Awarded for successfully completing a challenge."
+      description_with_topic: "授予在“%{title}”中完成全部所需签到的参与者。"
+      description_fallback: "授予成功完成挑战的参与者。"
     errors:
-      access_denied: "You do not have permission to manage this challenge."
-      badge_name_required: "Badge name is required when awarding a completion badge."
-      category_access_denied: "You can only create challenges in categories you moderate."
+      access_denied: "你没有管理此挑战的权限。"
+      badge_name_required: "颁发挑战完成徽章时，必须填写徽章名称。"
+      category_access_denied: "你只能在自己管理的分类中创建挑战。"
     bot:
-      onboarding_dm_title: "Welcome to the %{challenge_name} challenge!"
+      onboarding_dm_title: "欢迎参加“%{challenge_name}”挑战！"
       onboarding_dm_body: |
-        You're in! Here's what you need to know:
+        你已加入挑战！以下是活动信息：
 
-        - **Hashtag:** #%{hashtag}
-        - **Check-ins needed:** %{check_ins_needed}
-        - **Challenge ends:** %{end_date}
+        - **签到标签：** #%{hashtag}
+        - **达标所需签到次数：** %{check_ins_needed}
+        - **活动结束日期：** %{end_date}
 
-        **@%{bot_username} commands** — reply to this message or DM me anytime:
-        - `status` — your stats across all active challenges
-        - `progress` — check-ins vs goal, time remaining
-        - `leaderboard` — current standings
-        - `streak` — your current streak
-        - `checkins` — all your check-in dates
-        - `help` — show all commands
-      checkin_dm_title: "Check-in confirmed!"
+        **@%{bot_username} 指令** — 回复此消息或随时给我发送私信：
+        - `status` — 查看所有进行中挑战的个人统计
+        - `progress` — 查看签到进度和剩余时间
+        - `leaderboard` — 查看当前排行榜
+        - `streak` — 查看连续签到记录
+        - `checkins` — 查看全部签到日期
+        - `help` — 查看所有指令
+      checkin_dm_title: "签到成功！"
       checkin_dm_body: |
-        ✅ Check-in recorded for %{topic_link}!
+        ✅ 已记录你在 %{topic_link} 的签到！
 
-        Your current streak: **%{streak_text}** 🔥
-        Progress: **%{check_ins} of %{needed}** check-ins completed
+        当前连续签到：**%{streak_text}** 🔥
+        完成进度：已签到 **%{check_ins} 次，目标 %{needed} 次**
       checkin_dm_body_first: |
-        🎉 Welcome to the challenge! Your first check-in for %{topic_link} has been recorded. Great start — keep it up!
+        🎉 欢迎参加挑战！已记录你在 %{topic_link} 的首次签到。开了个好头，继续保持！
 
-        You need **%{needed}** check-ins to complete the challenge. You've got this! ✨
-      completion_dm_title: "Challenge complete! 🏆"
+        完成挑战需要签到 **%{needed} 次**，加油！✨
+      completion_dm_title: "挑战完成！🏆"
       completion_dm_body_with_badge: |
-        🏆 Amazing work! You've completed the %{topic_link} challenge with **%{check_ins}**!
+        🏆 太棒了！你已在 %{topic_link} 中完成 **%{check_ins}**，达成挑战目标！
 
-        You've qualified for the **%{badge_name}** badge — it will be awarded when the challenge ends. Incredible effort! 🎉
+        你已获得 **%{badge_name}** 徽章的领取资格，徽章将在活动结束后颁发。感谢你的坚持！🎉
       completion_dm_body: |
-        🏆 Amazing work! You've completed the %{topic_link} challenge with **%{check_ins}**!
+        🏆 太棒了！你已在 %{topic_link} 中完成 **%{check_ins}**，达成挑战目标！
 
-        Incredible effort — congratulations on finishing strong! 🎉
-      reminder_dm_title: "Don't forget to check in — %{challenge_name}"
+        感谢你的坚持，恭喜完成挑战！🎉
+      reminder_dm_title: "别忘了签到 — %{challenge_name}"
       checkin_count:
-        other: "%{count} check-ins"
+        other: "%{count} 次签到"
       reminder_dm_body: |
-        👋 Hey! We haven't seen you check in to %{topic_link} for a few days. You have **%{checkin_count}** so far — you need **%{needed}** to complete the challenge. Don't give up!
+        👋 你已经有几天没在 %{topic_link} 签到了。目前已完成 **%{checkin_count}**，目标是 **%{needed} 次**。继续加油！
       reminder_dm_body_2: |
-        👋 It's been a week since your last check-in in %{topic_link}. It's not too late to jump back in! You have **%{checkin_count}** toward your goal of **%{needed}**. We'd love to see you back!
-      rate_limit_dm_title: "Slow down!"
-      rate_limit_dm_body: "You're sending commands too quickly. Please wait a while before trying again."
+        👋 距离你上次在 %{topic_link} 签到已经一周了，现在回来还不晚！目前已完成 **%{checkin_count}**，目标是 **%{needed} 次**。期待你的回归！
+      rate_limit_dm_title: "请稍等一下！"
+      rate_limit_dm_body: "你发送指令过于频繁，请稍后再试。"
       streak_day:
-        other: "%{count}-day streak"
+        other: "连续 %{count} 天"
       streak_week:
-        other: "%{count}-week streak"
-      mention_dm_title: "Re: %{command} — %{challenge_name}"
+        other: "连续 %{count} 周"
+      mention_dm_title: "回复：%{command} — %{challenge_name}"
       dm:
-        no_active_challenges: "You're not part of any active challenges."
+        no_active_challenges: "你目前没有参与进行中的挑战。"
         picker_prompt: |
-          You're in multiple active challenges. Reply with a number to select one, or **A** for all:
+          你正在参与多个挑战。请回复数字选择其中一个，或回复 **A** 查看全部：
 
           %{challenges}
 
-          Command: `%{command}`
+          指令：`%{command}`
         picker_invalid: |
-          Please reply with a valid number or **A** for all. Here are your challenges:
+          请回复有效的数字，或回复 **A** 查看全部。以下是你参与的挑战：
 
           %{challenges}
 
-          Command: `%{command}`
-        drawing_no_access: "You don't have permission to run prize drawings. This command is only available to challenge managers."
-        drawing_none: "No participants in %{challenge} meet the minimum of %{min_checkins} check-ins."
+          指令：`%{command}`
+        drawing_no_access: "你没有生成抽奖名单的权限，此指令仅对挑战管理员开放。"
+        drawing_none: "“%{challenge}”中没有参与者达到至少 %{min_checkins} 次签到的条件。"
         drawing_count:
-          other: "%{count} participants eligible"
+          other: "%{count} 人符合抽奖条件"
       commands:
-        status_header: "**Your active challenge status:**"
-        status_row: "- **%{challenge}** — %{check_ins} check-ins · %{streak} · %{pct}% complete"
-        status_none: "You haven't participated in any active challenges yet."
-        leaderboard_header: "**Current leaderboard for %{challenge}** (top 10):"
-        leaderboard_row: "%{rank}. @%{username} — %{count} check-ins"
-        leaderboard_none: "No check-ins recorded yet."
-        streak_message: "Your current streak in **%{challenge}**: **%{streak_text}** 🔥"
-        streak_none: "You haven't checked in to **%{challenge}** yet."
-        checkins_header: "**Your check-ins for %{challenge}** (%{count} total):"
+        status_header: "**你参与的进行中挑战：**"
+        status_row: "- **%{challenge}** — 签到 %{check_ins} 次 · %{streak} · 已完成 %{pct}%"
+        status_none: "你尚未参与任何进行中的挑战。"
+        leaderboard_header: "**%{challenge} 当前排行榜**（前 10 名）："
+        leaderboard_row: "%{rank}. @%{username} — 签到 %{count} 次"
+        leaderboard_none: "暂无签到记录。"
+        streak_message: "你在 **%{challenge}** 中的连续签到：**%{streak_text}** 🔥"
+        streak_none: "你还没有在 **%{challenge}** 中签到。"
+        checkins_header: "**你在 %{challenge} 中的签到记录**（共 %{count} 次）："
         checkins_row: "- %{date}"
-        checkins_none: "No check-ins recorded yet."
+        checkins_none: "暂无签到记录。"
         progress_message: |
-          **Progress for %{challenge}**
+          **%{challenge} 的完成进度**
 
-          - Check-ins: %{done} / %{needed}
+          - 签到次数：%{done} / %{needed}
           - %{time_remaining}
-          - Status: %{status}
+          - 状态：%{status}
         progress_time_remaining_day:
-          other: "%{count} days remaining"
+          other: "剩余 %{count} 天"
         progress_time_remaining_week:
-          other: "%{count} weeks remaining"
-        progress_on_track: "On track ✅"
-        progress_behind: "Behind — keep going! ⏩"
-        progress_complete: "Goal reached! 🏆"
-        unknown_command: "Unknown command. Here's what I can do:"
+          other: "剩余 %{count} 周"
+        progress_on_track: "进度正常 ✅"
+        progress_behind: "进度落后，继续加油！⏩"
+        progress_complete: "已达成目标！🏆"
+        unknown_command: "未识别的指令，你可以使用以下指令："
         help: |
-          **@%{bot_username} commands:**
+          **@%{bot_username} 指令：**
 
-          - `status` — your stats across all active challenges
-          - `leaderboard` — top 10 for this challenge
-          - `streak` — your current streak
-          - `checkins` — all your check-in dates
-          - `progress` — check-ins done vs needed, time remaining
-          - `help` — show this message
+          - `status` — 查看所有进行中挑战的个人统计
+          - `leaderboard` — 查看此挑战的前 10 名
+          - `streak` — 查看连续签到记录
+          - `checkins` — 查看全部签到日期
+          - `progress` — 查看签到进度和剩余时间
+          - `help` — 显示此帮助消息
   site_settings:
-    daily_challenge_enabled: "Discourse Challenges enabled"
-    daily_challenge_mod_access_enabled: "Discourse Challenges mod access enabled"
-    daily_challenge_category_mod_access_enabled: "Discourse Challenges category mod access enabled"
-    daily_challenge_bot_username: "Bot username for check-in confirmations, reminders, and @mention commands (leave blank to disable). Username is case-sensitive — enter it exactly as it appears in Discourse."
+    daily_challenge_enabled: "启用挑战活动插件"
+    daily_challenge_mod_access_enabled: "允许全站版主管理挑战活动"
+    daily_challenge_category_mod_access_enabled: "允许分类版主管理所属分类的挑战活动"
+    daily_challenge_bot_username: "用于发送签到确认、提醒和响应 @提及指令的机器人用户名（留空则关闭）。用户名区分大小写，请与社区中显示的用户名保持一致。"
