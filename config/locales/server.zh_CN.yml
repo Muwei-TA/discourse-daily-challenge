@@ -1,4 +1,4 @@
-zh-CN:
+zh_CN:
   daily_challenge:
     check_in:
       already_exists: "该用户在这一天已有签到记录。"
