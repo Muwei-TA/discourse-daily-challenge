@@ -24,6 +24,7 @@ export default class AdminDailyChallengeForm extends Component {
   @tracked weeklyPostEnabled;
   @tracked awardBadge;
   @tracked checkInInterval;
+  @tracked checkInScope;
   @tracked reminderDmsEnabled;
   @tracked topicTitle = null;
   @tracked topicFetchState = null; // null | "loading" | "found" | "error"
@@ -34,6 +35,7 @@ export default class AdminDailyChallengeForm extends Component {
     this.weeklyPostEnabled = args.challenge?.weekly_post_enabled ?? true;
     this.awardBadge = args.challenge?.award_badge ?? true;
     this.checkInInterval = args.challenge?.check_in_interval ?? "daily";
+    this.checkInScope = args.challenge?.check_in_scope ?? "topic";
     this.reminderDmsEnabled = args.challenge?.reminder_dms_enabled ?? true;
     if (args.challenge?.topic_id) {
       this.fetchTopicTitle(args.challenge.topic_id);
@@ -62,6 +64,8 @@ export default class AdminDailyChallengeForm extends Component {
       return {
         topic_id: c.topic_id,
         hashtag: c.hashtag,
+        check_in_scope: c.check_in_scope ?? "topic",
+        scope_tag: c.scope_tag ?? "",
         start_date: c.start_date,
         end_date: c.end_date,
         check_ins_needed: c.check_ins_needed,
@@ -81,6 +85,8 @@ export default class AdminDailyChallengeForm extends Component {
     return {
       topic_id: "",
       hashtag: "",
+      check_in_scope: "topic",
+      scope_tag: "",
       start_date: "",
       end_date: "",
       check_ins_needed: 20,
@@ -272,6 +278,13 @@ export default class AdminDailyChallengeForm extends Component {
     ];
   }
 
+  get checkInScopeOptions() {
+    return ["topic", "topic_tag", "site_hashtag"].map((value) => ({
+      value,
+      name: i18n(`daily_challenge.admin.form.check_in_scope_options.${value}`),
+    }));
+  }
+
   get checkInIntervalOptions() {
     return [
       {
@@ -343,6 +356,12 @@ export default class AdminDailyChallengeForm extends Component {
   @action
   handleAwardBadge(value, { set, name }) {
     this.awardBadge = value;
+    set(name, value);
+  }
+
+  @action
+  handleCheckInScope(value, { set, name }) {
+    this.checkInScope = value;
     set(name, value);
   }
 
@@ -452,6 +471,39 @@ export default class AdminDailyChallengeForm extends Component {
             placeholder={{i18n "daily_challenge.admin.form.hashtag_placeholder"}}
           />
         </form.Field>
+
+        <form.Field
+          @name="check_in_scope"
+          @title={{i18n "daily_challenge.admin.form.check_in_scope"}}
+          @validation="required"
+          @type="select"
+          @onSet={{this.handleCheckInScope}}
+          as |field|
+        >
+          <field.Control as |select|>
+            {{#each this.checkInScopeOptions as |opt|}}
+              <select.Option @value={{opt.value}}>{{opt.name}}</select.Option>
+            {{/each}}
+          </field.Control>
+        </form.Field>
+
+        {{#if (eq this.checkInScope "topic_tag")}}
+          <form.Field
+            @name="scope_tag"
+            @title={{i18n "daily_challenge.admin.form.scope_tag"}}
+            @validation="required"
+            @type="input"
+            as |field|
+          >
+            <field.Control
+              placeholder={{i18n "daily_challenge.admin.form.scope_tag_placeholder"}}
+            />
+          </form.Field>
+        {{/if}}
+
+        <p class="fcd-scope-hint">
+          {{i18n "daily_challenge.admin.form.check_in_scope_help"}}
+        </p>
 
         <form.Field
           @name="start_date"

@@ -69,7 +69,8 @@ after_initialize do
     DiscourseDailyChallenge::DmCommandHandler.handle(post)
   end
 
-  on(:post_revised) do |post|
+  # Discourse emits :post_edited when an existing post is revised.
+  on(:post_edited) do |post|
     next unless SiteSetting.daily_challenge_enabled
     next if post.post_type != Post.types[:regular]
     user = post.user

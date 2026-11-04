@@ -10,7 +10,17 @@ class DailyChallenge < ActiveRecord::Base
            foreign_key: :challenge_id,
            dependent: :destroy
 
+  CHECK_IN_SCOPES = %w[topic topic_tag site_hashtag].freeze
+
+  before_validation :normalize_scope_tag
+
   validates :topic_id, presence: true, uniqueness: true
+  validates :check_in_scope, inclusion: { in: CHECK_IN_SCOPES }
+  validates :scope_tag, presence: true, if: :topic_tag_scope?
+  validates :scope_tag,
+            length: { maximum: 100 },
+            format: { with: /\A[[:alnum:]_-]+\z/ },
+            allow_blank: true
   validates :hashtag,
             presence: true,
             format: {
@@ -62,6 +72,14 @@ class DailyChallenge < ActiveRecord::Base
     tz = ActiveSupport::TimeZone[challenge_timezone] || Time.zone
     local_today = Time.now.in_time_zone(tz).to_date
     local_today >= start_date && local_today <= end_date
+  end
+
+  def topic_tag_scope?
+    check_in_scope == "topic_tag"
+  end
+
+  def normalize_scope_tag
+    self.scope_tag = scope_tag.to_s.strip.downcase.presence
   end
 
   def end_date_after_start_date

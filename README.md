@@ -94,7 +94,9 @@ Go to **Admin → Plugins → Challenges → Challenges → New Challenge**.
 
 | Field | Description |
 |---|---|
-| **Topic ID** | The ID of the Discourse topic where participants will post. The plugin fetches and displays the topic title as a confirmation after you enter the ID. |
+| **Topic ID** | The announcement and leaderboard topic. In topic-only mode it is also the only allowed check-in location. |
+| **Check-in scope** | **Linked topic (default):** original behavior. **Topic tag:** check-ins from public topics carrying the configured Discourse tag. **Entire forum (hashtag):** check-ins from any public topic containing the explicit challenge hashtag. |
+| **Scope tag** | Required for "Topic tag" mode; enter the Discourse topic tag name (e.g. `打卡`, without `#`). |
 | **Hashtag trigger** | The hashtag (without `#`) that triggers a check-in when included in a post. Only letters, digits, and underscores are allowed. |
 | **Start date** | The first day of the challenge (inclusive). |
 | **End date** | The last day of the challenge (inclusive). Check-ins are accepted through the end of this day in the challenge timezone. Must be after the start date. |
@@ -112,16 +114,26 @@ Go to **Admin → Plugins → Challenges → Challenges → New Challenge**.
 
 ## How Check-ins Work
 
-A check-in is recorded automatically when a participant posts in the linked topic and their post matches either condition:
+Challenge scope is configurable. **Existing challenges remain on `topic` by default; changing scope does not backfill historical posts.**
+
+| Scope | Where posts may be counted | What counts |
+| --- | --- | --- |
+| `topic` (default) | The challenge's linked topic only | Challenge body hashtag **or** image upload |
+| `topic_tag` | Any **public** topic with the specified Discourse topic tag | Challenge body hashtag **or** image upload |
+| `site_hashtag` | Any **public** topic across the forum | **Explicit challenge body hashtag required**; images alone do not count |
+
+The linked Topic ID stays mandatory in all modes for announcements, leaderboards and admin access control. Cross-topic modes ignore private messages, hidden topics, and restricted categories. Category moderators cannot enable cross-category scopes; only site admins and full moderators may do so.
+
+For eligible posts, the plugin matches either condition (except site-wide hashtag mode, which requires the hashtag):
 
 1. **Hashtag** — the post body contains the challenge hashtag (e.g. `#workout`). The match is case-insensitive and must be a whole word (preceded by a space or the start of the line).
 2. **Image upload** — the post includes an image attachment (jpg, jpeg, png, gif, webp, heic, or avif).
 
 **Rules:**
-- Only one check-in is recorded per user per period: one per calendar day for daily challenges, or one per calendar week for weekly challenges (week boundaries determined by the configured week start day, evaluated in the challenge's timezone).
+- Only one check-in is recorded per user **per challenge** per period, regardless of the source topic: one per calendar day for daily challenges, or one per calendar week for weekly challenges (week boundaries determined by the configured week start day, evaluated in the challenge's timezone).
 - Check-ins are only recorded while the challenge is active (between start date and end date, evaluated in the challenge's timezone).
 - Anonymous users cannot check in.
-- System posts and non-regular posts are ignored.
+- System/bot posts, anonymous users, and non-regular posts are ignored. Only **new** matching posts or qualifying edits are tracked; previous posts are not retroactively scanned.
 
 ## ChallengeBot DMs
 
