@@ -6,6 +6,8 @@ class DailyChallengeSerializer < ApplicationSerializer
              :topic_url,
              :topic_title,
              :hashtag,
+             :check_in_scope,
+             :scope_tag,
              :start_date,
              :end_date,
              :check_ins_needed,
