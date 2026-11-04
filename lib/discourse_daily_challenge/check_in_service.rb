@@ -33,7 +33,7 @@ module DiscourseDailyChallenge
         )
       end
 
-      DailyCheckIn.create!(
+      check_in = DailyCheckIn.create!(
         challenge_id: challenge.id,
         user_id: user.id,
         check_in_date: user_date,
@@ -49,6 +49,7 @@ module DiscourseDailyChallenge
         :discourse_daily_challenge_send_checkin_dm,
         user_id: user.id,
         challenge_id: challenge.id,
+        check_in_id: check_in.id,
       )
 
       if total_check_ins == challenge.check_ins_needed
@@ -78,10 +79,10 @@ module DiscourseDailyChallenge
       return unless post.topic.tags.exists?(id: challenge.tag_id)
       return if DailyCheckIn.exists?(challenge_id: challenge.id, user_id: user.id, check_in_date: today)
 
-      DailyCheckIn.create!(challenge_id: challenge.id, user_id: user.id,
+      check_in = DailyCheckIn.create!(challenge_id: challenge.id, user_id: user.id,
                           check_in_date: today, post_id: post.id, admin_added: false)
       clear_reminder_keys(challenge, user.id)
-      Jobs.enqueue(:discourse_daily_challenge_send_checkin_dm, user_id: user.id, challenge_id: challenge.id)
+      Jobs.enqueue(:discourse_daily_challenge_send_checkin_dm, user_id: user.id, challenge_id: challenge.id, check_in_id: check_in.id)
       if challenge.check_ins.where(user_id: user.id).count == challenge.check_ins_needed
         Jobs.enqueue(:discourse_daily_challenge_send_completion_dm, user_id: user.id, challenge_id: challenge.id)
       end
@@ -142,7 +143,7 @@ module DiscourseDailyChallenge
         )
       end
 
-      DailyCheckIn.create!(
+      check_in = DailyCheckIn.create!(
         challenge_id: challenge.id,
         user_id: user.id,
         check_in_date: post_date,
@@ -158,6 +159,7 @@ module DiscourseDailyChallenge
         :discourse_daily_challenge_send_checkin_dm,
         user_id: user.id,
         challenge_id: challenge.id,
+        check_in_id: check_in.id,
       )
 
       if total_check_ins == challenge.check_ins_needed

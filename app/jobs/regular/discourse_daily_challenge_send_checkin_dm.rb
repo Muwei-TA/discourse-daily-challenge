@@ -14,6 +14,14 @@ module Jobs
       challenge = DailyChallenge.find_by(id: args[:challenge_id])
       return unless challenge
 
+      check_ins_scope = challenge.check_ins.where(user_id: user.id)
+      check_in = if args[:check_in_id]
+        check_ins_scope.find_by(id: args[:check_in_id])
+      else
+        check_ins_scope.order(check_in_date: :desc, id: :desc).first
+      end
+      return unless check_in
+
       challenge_name = challenge.display_name
       topic_link = challenge.bot_link
 
@@ -62,18 +70,16 @@ module Jobs
           I18n.t("daily_challenge.bot.checkin_dm_title")
         end
 
-      PostCreator.create!(
-        bot,
-        title: title,
-        raw: raw,
-        archetype: Archetype.private_message,
-        target_usernames: [user.username],
-        skip_validations: true,
+      DiscourseDailyChallenge::AiNotification.deliver(
+        event_key: "checkin:#{check_in.id}", kind: :checkin,
+        challenge: challenge, user: user, check_in: check_in,
+        fallback_sender: bot, title: title, fallback_raw: raw,
       )
     rescue StandardError => e
       Rails.logger.error(
         "DailyChallenge checkin DM error for user #{args[:user_id]}, challenge #{args[:challenge_id]}: #{e.message}",
       )
+      raise
     end
   end
 end

@@ -1,5 +1,10 @@
 en:
   daily_challenge:
+    ai_notice:
+      fallback_checkin: ">> [Check-in received]❤ Hmph, you showed up today. Keep it going tomorrow! ❤"
+      fallback_reminder: ">> [Still waiting]❤ Hmph, your daily topic is ready. Come back when you can! ❤"
+      checkin_facts: "**Check-in recorded | %{date}**\n\nActivity: %{name}\nProgress: **%{total} / %{needed}** · Streak: **%{streak} days**\n\n[View this check-in](%{url})"
+      reminder_facts: "Activity: %{name}\nProgress: **%{total} / %{needed}** · Last check-in: **%{last_date}**\n\n[Open the daily topic](%{url})"
     daily_topic:
       title: "%{name} | %{date} check-in"
       body: "**%{name}**\n\nToday is **%{date}** (%{timezone}). Reply before the end of this date to check in, once per person per day. No hashtag or image is required.\n\nOlder topics remain open for discussion, but late replies do not count. Goal: %{needed} check-ins.\n\n[Browse activity topics](%{url}) · Tag: %{tag}"
@@ -143,6 +148,7 @@ en:
           - `progress` — check-ins done vs needed, time remaining
           - `help` — show this message
   site_settings:
+    daily_challenge_notification_ai_agent_id: "AI agent ID for successful check-ins and reminder PMs; 0 keeps fixed templates. Email respects user notification preferences."
     daily_challenge_enabled: "Discourse Challenges enabled"
     daily_challenge_mod_access_enabled: "Discourse Challenges mod access enabled"
     daily_challenge_category_mod_access_enabled: "Discourse Challenges category mod access enabled"

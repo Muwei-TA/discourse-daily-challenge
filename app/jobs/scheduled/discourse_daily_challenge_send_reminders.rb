@@ -44,13 +44,11 @@ module Jobs
         if missed_days == 2
           key = "daily_challenge:reminder_1:#{challenge.id}:#{user_id}"
           next if Discourse.redis.exists?(key)
-          send_reminder_dm(bot, challenge, user_id, :first)
-          Discourse.redis.set(key, "1")
+          Jobs.enqueue(:discourse_daily_challenge_send_reminder_dm, challenge_id: challenge.id, user_id: user_id, stage: "first")
         elsif missed_days == 7
           key = "daily_challenge:reminder_2:#{challenge.id}:#{user_id}"
           next if Discourse.redis.exists?(key)
-          send_reminder_dm(bot, challenge, user_id, :second)
-          Discourse.redis.set(key, "1")
+          Jobs.enqueue(:discourse_daily_challenge_send_reminder_dm, challenge_id: challenge.id, user_id: user_id, stage: "second")
         end
       end
     end
@@ -81,8 +79,7 @@ module Jobs
       (participant_ids - checked_in_this_week).each do |user_id|
         key = "daily_challenge:reminder_weekly:#{challenge.id}:#{user_id}:#{week_start}"
         next if Discourse.redis.get(key)
-        send_reminder_dm(bot, challenge, user_id, :weekly)
-        Discourse.redis.setex(key, 8.days.to_i, "1")
+        Jobs.enqueue(:discourse_daily_challenge_send_reminder_dm, challenge_id: challenge.id, user_id: user_id, stage: "weekly")
       end
     end
 
@@ -101,23 +98,27 @@ module Jobs
       body_key =
         stage == :second ? "daily_challenge.bot.reminder_dm_body_2" : "daily_challenge.bot.reminder_dm_body"
 
-      PostCreator.create!(
-        bot,
+      fallback_raw = I18n.t(
+        body_key, topic_link: topic_link, checkin_count: checkin_count_text,
+        needed: challenge.check_ins_needed,
+      )
+      period = if stage == :weekly
+        wday = DiscourseDailyChallenge::ChallengeUtils.week_start_wday(challenge)
+        DiscourseDailyChallenge::ChallengeUtils.week_start_for_date(challenge.local_date, wday)
+      else
+        challenge.check_ins.where(user_id: user.id).maximum(:check_in_date)
+      end
+      DiscourseDailyChallenge::AiNotification.deliver(
+        event_key: "reminder:#{challenge.id}:#{user.id}:#{stage}:#{period}", kind: :reminder,
+        challenge: challenge, user: user, stage: stage, fallback_sender: bot,
         title: I18n.t("daily_challenge.bot.reminder_dm_title", challenge_name: challenge_name),
-        raw: I18n.t(
-          body_key,
-          topic_link: topic_link,
-          checkin_count: checkin_count_text,
-          needed: challenge.check_ins_needed,
-        ),
-        archetype: Archetype.private_message,
-        target_usernames: [user.username],
-        skip_validations: true,
+        fallback_raw: fallback_raw,
       )
     rescue StandardError => e
       Rails.logger.error(
         "DailyChallenge reminder DM error for user #{user_id}, challenge #{challenge.id}: #{e.message}",
       )
+      raise
     end
   end
 end

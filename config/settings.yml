@@ -1,4 +1,8 @@
 plugins:
+  daily_challenge_notification_ai_agent_id:
+    default: 0
+    type: integer
+    min: 0
   daily_challenge_enabled:
     default: true
     client: true

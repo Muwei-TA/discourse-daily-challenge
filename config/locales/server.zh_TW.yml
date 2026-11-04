@@ -1,5 +1,10 @@
 zh-TW:
   daily_challenge:
+    ai_notice:
+      fallback_checkin: ">> [签到收到]❤ 哼，今天也有好好出现嘛，本小姐先给你记下了，明天可别偷偷溜走呀，杂鱼❤"
+      fallback_reminder: ">> [还没出现呀]❤ 哼，本小姐可发现你还没来，今天的打卡贴已经备好了，忙完就回来冒个泡吧，杂鱼❤"
+      checkin_facts: "**签到成功｜%{date}**\n\n活动：%{name}\n累计签到：**%{total} / %{needed} 次** · 连续签到：**%{streak} 天**\n\n[查看本次打卡](%{url})"
+      reminder_facts: "活动：%{name}\n累计签到：**%{total} / %{needed} 次** · 最近签到：**%{last_date}**\n\n[进入今日打卡贴](%{url})"
     daily_topic:
       title: "%{name}｜%{date} 打卡"
       body: "**%{name}**\n\n今天是 **%{date}**（%{timezone}）。在今天结束前回复本帖即可签到，每人每天一次，无须填写 #标签或上传图片。\n\n本帖过期后仍可讨论，但跨天回复不计签到。活动目标：%{needed} 次签到。\n\n[浏览活动话题与每日打卡贴](%{url}) · 标签：%{tag}"
@@ -135,6 +140,7 @@ zh-TW:
           - `progress` — check-ins done vs needed, time remaining
           - `help` — show this message
   site_settings:
+    daily_challenge_notification_ai_agent_id: "用于签到成功及漏签提醒私信的 AI 智能体 ID；0 使用原固定文案。邮件沿用用户通知偏好。"
     daily_challenge_enabled: "Discourse Challenges enabled"
     daily_challenge_mod_access_enabled: "Discourse Challenges mod access enabled"
     daily_challenge_category_mod_access_enabled: "Discourse Challenges category mod access enabled"

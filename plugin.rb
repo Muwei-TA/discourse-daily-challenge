@@ -48,12 +48,14 @@ after_initialize do
   require_relative "lib/discourse_daily_challenge/challenge_utils"
   require_relative "lib/discourse_daily_challenge/leaderboard_poster"
   require_relative "lib/discourse_daily_challenge/check_in_service"
+  require_relative "lib/discourse_daily_challenge/ai_notification"
   require_relative "app/services/discourse_daily_challenge/mention_handler"
   require_relative "app/services/discourse_daily_challenge/dm_command_handler"
   require_relative "jobs/scheduled/daily_challenge_weekly_post"
   require_relative "jobs/scheduled/daily_challenge_final_post"
   require_relative "app/jobs/scheduled/discourse_daily_challenge_send_reminders"
   require_relative "app/jobs/regular/discourse_daily_challenge_send_checkin_dm"
+  require_relative "app/jobs/regular/discourse_daily_challenge_send_reminder_dm"
   require_relative "app/jobs/regular/discourse_daily_challenge_send_completion_dm"
 
   add_to_serializer(:current_user, :is_challenge_manager) do
