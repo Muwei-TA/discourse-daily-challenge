@@ -30,6 +30,13 @@ class DiscourseDailyChallenge::AdminDailyChallengesController < Admin::AdminCont
       challenge.category_id = topic.category_id if topic
     end
 
+    unless can_manage_scope?(challenge)
+      return render_json_error(
+               I18n.t("daily_challenge.errors.category_access_denied"),
+               status: :unprocessable_entity,
+             )
+    end
+
     unless can_access_challenge_category?(challenge.category_id)
       return render_json_error(
                I18n.t("daily_challenge.errors.category_access_denied"),
@@ -58,6 +65,13 @@ class DiscourseDailyChallenge::AdminDailyChallengesController < Admin::AdminCont
     if params[:topic_id].present?
       topic = Topic.find_by(id: params[:topic_id])
       @challenge.category_id = topic.category_id if topic
+    end
+
+    unless can_manage_scope?(@challenge)
+      return render_json_error(
+               I18n.t("daily_challenge.errors.category_access_denied"),
+               status: :unprocessable_entity,
+             )
     end
 
     unless can_access_challenge_category?(@challenge.category_id)
@@ -151,6 +165,12 @@ class DiscourseDailyChallenge::AdminDailyChallengesController < Admin::AdminCont
     end
   end
 
+  # Category moderators may not activate scopes that count posts in categories
+  # outside their moderation permissions.
+  def can_manage_scope?(challenge)
+    current_user.admin? || current_user.moderator? || challenge.check_in_scope == "topic"
+  end
+
   def can_access_challenge?(challenge)
     return true if current_user.admin?
     return true if current_user.moderator?
@@ -195,6 +215,8 @@ class DiscourseDailyChallenge::AdminDailyChallengesController < Admin::AdminCont
     params.permit(
       :topic_id,
       :hashtag,
+      :check_in_scope,
+      :scope_tag,
       :start_date,
       :end_date,
       :check_ins_needed,
