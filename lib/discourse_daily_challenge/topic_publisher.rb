@@ -3,6 +3,10 @@
 module DiscourseDailyChallenge
   module TopicPublisher
     def self.publish_today(challenge)
+      I18n.with_locale(SiteSetting.default_locale) { publish_today_in_locale(challenge) }
+    end
+
+    def self.publish_today_in_locale(challenge)
       return unless challenge.daily_topics_enabled? && challenge.active?
       date = challenge.local_date
       body = I18n.t("daily_challenge.daily_topic.body", name: challenge.display_name,

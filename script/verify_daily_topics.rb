@@ -38,7 +38,7 @@ first = nil
 ['中文签到', '📚', '阅读打卡📚', '👍🏽', '👩‍💻'].each do |label|
   tag = DiscourseDailyChallenge::TagManager.resolve!(label, Guardian.new(admin))
   challenge = make_challenge.call(label, tag)
-  publication = DiscourseDailyChallenge::TopicPublisher.publish_today(challenge)
+  publication = I18n.with_locale(:en) { DiscourseDailyChallenge::TopicPublisher.publish_today(challenge) }
   check(results, "#{label}: exact tag persisted and assigned") { tag.reload.name == label && publication.topic.tags.exists?(id: tag.id) }
   check(results, "#{label}: bot author and midnight date") { publication.topic.user_id == bot.id && publication.publication_date == today }
   check(results, "#{label}: canonical tag filter URL uses ID") { tag.url.end_with?("/#{tag.id}") }
@@ -46,6 +46,7 @@ first = nil
 end
 publisher = DiscourseDailyChallenge::TopicPublisher
 publication = first.publications.find_by!(kind: 'daily', publication_date: today)
+check(results, 'publisher uses site locale outside a web request') { publication.topic.title.end_with?('打卡') && publication.topic.first_post.raw.include?('无须填写') }
 check(results, 'activity does not require topic_id') { first.topic_id.nil? }
 check(results, 'repeat publication returns same topic') { publisher.publish_today(first).id == publication.id }
 reply = lambda do |raw, target = publication.topic_id, author = user|

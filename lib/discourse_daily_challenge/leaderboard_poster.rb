@@ -3,6 +3,10 @@
 module DiscourseDailyChallenge
   module LeaderboardPoster
     def self.post_weekly_update(challenge)
+      I18n.with_locale(SiteSetting.default_locale) { post_weekly_update_in_locale(challenge) }
+    end
+
+    def self.post_weekly_update_in_locale(challenge)
       if challenge.daily_topics_enabled?
         date = challenge.local_date
         wday = ChallengeUtils.week_start_wday(challenge)

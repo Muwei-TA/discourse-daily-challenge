@@ -20,6 +20,10 @@ module Jobs
     private
 
     def post_final_results(challenge)
+      I18n.with_locale(SiteSetting.default_locale) { publish_final_results(challenge) }
+    end
+
+    def publish_final_results(challenge)
       topic = challenge.topic
       return unless topic || challenge.daily_topics_enabled?
 
