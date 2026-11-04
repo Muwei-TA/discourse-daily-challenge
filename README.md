@@ -1,3 +1,5 @@
+> Blackroom 2.0：每日独立打卡话题。配置、接口、升级和回滚见 [DAILY_TOPICS.md](DAILY_TOPICS.md)。以下上游说明中的固定 Topic ID 和回复 #hashtag 规则仅适用于未迁移的旧活动。
+
 > ⚠️ **This repository has moved to GitLab.** Please update your `app.yml` to point to the new URL. See the README for details.
 
 # Discourse Daily Challenge

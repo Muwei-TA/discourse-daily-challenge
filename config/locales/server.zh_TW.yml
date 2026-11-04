@@ -1,5 +1,11 @@
 zh-TW:
   daily_challenge:
+    daily_topic:
+      title: "%{name}｜%{date} 打卡"
+      body: "**%{name}**\n\n今天是 **%{date}**（%{timezone}）。在今天结束前回复本帖即可签到，每人每天一次，无须填写 #标签或上传图片。\n\n本帖过期后仍可讨论，但跨天回复不计签到。活动目标：%{needed} 次签到。\n\n[浏览活动话题与每日打卡贴](%{url}) · 标签：%{tag}"
+      weekly_title: "%{name}｜%{date} 每周榜单"
+      final_title: "%{name}｜最终总结"
+      weekly_footer: "请到今日打卡贴签到；本榜单的回复不计签到。"
     check_in:
       already_exists: "A check-in for this user on that date already exists."
       already_exists_this_week: "A check-in for this user already exists during that week."
@@ -132,4 +138,4 @@ zh-TW:
     daily_challenge_enabled: "Discourse Challenges enabled"
     daily_challenge_mod_access_enabled: "Discourse Challenges mod access enabled"
     daily_challenge_category_mod_access_enabled: "Discourse Challenges category mod access enabled"
-    daily_challenge_bot_username: "Bot username for check-in confirmations, reminders, and @mention commands (leave blank to disable). Username is case-sensitive — enter it exactly as it appears in Discourse."
+    daily_challenge_bot_username: "發布每日打卡貼、簽到確認、提醒和指令回覆的機器人使用者名稱。每日獨立話題活動必須設定可用機器人。"

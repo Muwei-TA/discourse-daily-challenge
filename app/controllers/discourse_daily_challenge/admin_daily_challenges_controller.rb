@@ -8,6 +8,16 @@ class DiscourseDailyChallenge::AdminDailyChallengesController < Admin::AdminCont
   before_action :check_mod_access
   before_action :find_and_authorize_challenge, only: %i[show update destroy post_leaderboard drawing]
 
+  def configuration
+    categories = Category.secured(guardian)
+    categories = categories.where(id: category_mod_category_ids) unless current_user.staff?
+    categories = categories.select { |category| guardian.can_create_topic_on_category?(category) }
+    render json: {
+      categories: categories.map { |category| { id: category.id, name: category.name } },
+      tags: Tag.visible(guardian).order(:name).limit(1000).pluck(:name),
+    }
+  end
+
   def index
     challenges = DailyChallenge.includes(:topic).order(start_date: :desc)
 
@@ -24,11 +34,7 @@ class DiscourseDailyChallenge::AdminDailyChallengesController < Admin::AdminCont
 
   def create
     challenge = DailyChallenge.new(challenge_params)
-
-    if params[:topic_id].present?
-      topic = Topic.find_by(id: params[:topic_id])
-      challenge.category_id = topic.category_id if topic
-    end
+    configure_daily_topics(challenge)
 
     unless can_access_challenge_category?(challenge.category_id)
       return render_json_error(
@@ -46,6 +52,7 @@ class DiscourseDailyChallenge::AdminDailyChallengesController < Admin::AdminCont
 
     if challenge.save
       sync_badge(challenge)
+      publish_today(challenge)
       render_serialized(challenge, DailyChallengeSerializer, root: "challenge")
     else
       render_json_error(challenge)
@@ -54,11 +61,7 @@ class DiscourseDailyChallenge::AdminDailyChallengesController < Admin::AdminCont
 
   def update
     @challenge.assign_attributes(challenge_params)
-
-    if params[:topic_id].present?
-      topic = Topic.find_by(id: params[:topic_id])
-      @challenge.category_id = topic.category_id if topic
-    end
+    configure_daily_topics(@challenge)
 
     unless can_access_challenge_category?(@challenge.category_id)
       return render_json_error(
@@ -74,11 +77,15 @@ class DiscourseDailyChallenge::AdminDailyChallengesController < Admin::AdminCont
              )
     end
 
-    if @challenge.save
-      sync_badge(@challenge)
-      render_serialized(@challenge, DailyChallengeSerializer, root: "challenge")
-    else
-      render_json_error(@challenge)
+    DailyChallenge.transaction do
+      if @challenge.save
+        retag_today(@challenge) if @challenge.saved_change_to_tag_id?
+        sync_badge(@challenge)
+        publish_today(@challenge)
+        render_serialized(@challenge, DailyChallengeSerializer, root: "challenge")
+      else
+        render_json_error(@challenge)
+      end
     end
   end
 
@@ -191,10 +198,47 @@ class DiscourseDailyChallenge::AdminDailyChallengesController < Admin::AdminCont
     ).distinct.pluck(:category_id)
   end
 
+  def retag_today(challenge)
+    topic = challenge.today_topic
+    return unless topic
+    raise Discourse::InvalidAccess unless can_access_challenge_category?(topic.category_id)
+    bot = DiscourseDailyChallenge.bot_user
+    raise Discourse::InvalidParameters.new(:daily_challenge_bot_username) unless bot
+    bot_guardian = Guardian.new(bot)
+    DiscourseDailyChallenge::TagManager.validate_category!(challenge.tag, topic.category, bot_guardian)
+    old_tag_id = challenge.saved_change_to_tag_id.first
+    tag_ids = (topic.tags.pluck(:id) - [old_tag_id] + [challenge.tag_id]).uniq
+    unless DiscourseTagging.tag_topic(topic, bot_guardian, tag_ids.map { |id| { id: id } })
+      raise Discourse::InvalidParameters.new(:tag_name)
+    end
+  end
+
+  def publish_today(challenge)
+    DiscourseDailyChallenge::TopicPublisher.publish_today(challenge)
+  rescue StandardError
+    # The activity is saved. Return the persisted error so the admin sees it;
+    # the scheduled publisher retries once the configuration is repaired.
+  end
+
+  def configure_daily_topics(challenge)
+    challenge.daily_topics_enabled = true
+    challenge.check_in_interval = "daily"
+    challenge.challenge_timezone = "Beijing" if challenge.new_record? && params[:challenge_timezone].blank?
+    category = Category.find_by(id: challenge.category_id)
+    raise Discourse::InvalidParameters.new(:category_id) unless category
+    raise Discourse::InvalidAccess unless can_access_challenge_category?(category.id) && guardian.can_create_topic_on_category?(category)
+    name = params[:tag_name].presence || challenge.tag&.name
+    tag = DiscourseDailyChallenge::TagManager.resolve!(name, guardian)
+    DiscourseDailyChallenge::TagManager.validate_category!(tag, category, guardian)
+    challenge.tag = tag
+    # Retain the non-null legacy column without using it as a content trigger.
+    challenge.hashtag ||= "daily_challenge"
+  end
+
   def challenge_params
     params.permit(
-      :topic_id,
-      :hashtag,
+      :name,
+      :category_id,
       :start_date,
       :end_date,
       :check_ins_needed,
@@ -205,7 +249,6 @@ class DiscourseDailyChallenge::AdminDailyChallengesController < Admin::AdminCont
       :award_badge,
       :badge_name,
       :challenge_timezone,
-      :check_in_interval,
       :week_start,
       :reminder_dms_enabled,
       :welcome_message,
@@ -247,9 +290,8 @@ class DiscourseDailyChallenge::AdminDailyChallengesController < Admin::AdminCont
   end
 
   def badge_description_for(challenge)
-    topic = Topic.find_by(id: challenge.topic_id)
-    if topic
-      I18n.t("daily_challenge.badge.description_with_topic", title: topic.title)
+    if challenge.display_name.present?
+      I18n.t("daily_challenge.badge.description_with_topic", title: challenge.display_name)
     else
       I18n.t("daily_challenge.badge.description_fallback")
     end

@@ -20,7 +20,8 @@ module DiscourseDailyChallenge
       return unless post.raw.to_s.include?("@#{bot_username}")
 
       # Find active challenge for this topic
-      challenge = DailyChallenge.find_by(topic_id: post.topic_id)
+      publication = DailyChallengeTopic.find_by(topic_id: post.topic_id)
+      challenge = publication&.challenge || DailyChallenge.find_by(topic_id: post.topic_id, daily_topics_enabled: false)
       return unless challenge&.active?
 
       user = post.user
@@ -47,7 +48,7 @@ module DiscourseDailyChallenge
       end
 
       # Plain text for the PM subject line (markdown doesn't render there)
-      challenge_name = challenge.topic&.title || "##{challenge.hashtag}"
+      challenge_name = challenge.display_name
       response = build_response(command, challenge, user, bot_username)
 
       PostCreator.create!(
@@ -204,7 +205,7 @@ module DiscourseDailyChallenge
       done = DailyCheckIn.where(challenge_id: challenge.id, user_id: user.id).count
       needed = challenge.check_ins_needed
 
-      today = Date.current
+      today = challenge.local_date
       days_left = [(challenge.end_date - today).to_i, 0].max
 
       time_remaining =
@@ -246,11 +247,7 @@ module DiscourseDailyChallenge
     end
 
     def self.challenge_link(challenge)
-      if challenge.topic
-        "[**#{challenge.topic.title}**](#{Discourse.base_url}/t/#{challenge.topic.slug}/#{challenge.topic.id})"
-      else
-        "**##{challenge.hashtag}**"
-      end
+      challenge.bot_link
     end
     private_class_method :challenge_link
   end

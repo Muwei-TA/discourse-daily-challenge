@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 class DailyChallengeSerializer < ApplicationSerializer
-  attributes :id,
+  attributes :name, :tag_id, :tag_name, :topics_url, :today_topic_url, :daily_topics,
+             :daily_topics_enabled, :publication_error, :publication_error_at,
+             :id,
              :topic_id,
              :topic_url,
              :topic_title,
@@ -27,12 +29,39 @@ class DailyChallengeSerializer < ApplicationSerializer
              :reminder_dms_enabled,
              :welcome_message
 
+  def name
+    object.display_name
+  end
+
+  def hashtag
+    object.display_tag
+  end
+
+  def tag_name
+    object.tag&.name
+  end
+
+  def topics_url
+    object.topics_url
+  end
+
+  def today_topic_url
+    object.today_topic&.relative_url
+  end
+
+  def daily_topics
+    object.publications.where(kind: "daily").order(publication_date: :desc).includes(:topic).map do |publication|
+      { date: publication.publication_date, topic_id: publication.topic_id,
+        title: publication.topic&.title, url: publication.topic&.relative_url }
+    end
+  end
+
   def topic_url
-    object.topic&.relative_url
+    object.destination_topic&.relative_url
   end
 
   def topic_title
-    object.topic&.title
+    object.display_name
   end
 
   def active

@@ -37,14 +37,13 @@ module DiscourseDailyChallenge
       if challenge.check_in_interval == "weekly"
         user_weekly_streak(challenge, dates)
       else
-        user_daily_streak(dates)
+        user_daily_streak(dates, challenge.local_date)
       end
     end
 
-    def self.user_daily_streak(sorted_dates)
+    def self.user_daily_streak(sorted_dates, today = Date.current)
       return 0 if sorted_dates.empty?
 
-      today = Date.current
       return 0 if sorted_dates.last < today - 1
 
       streak = 0

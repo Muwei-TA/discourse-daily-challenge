@@ -3,6 +3,13 @@
 module DiscourseDailyChallenge
   module LeaderboardPoster
     def self.post_weekly_update(challenge)
+      if challenge.daily_topics_enabled?
+        date = challenge.local_date
+        wday = ChallengeUtils.week_start_wday(challenge)
+        period = ChallengeUtils.week_start_for_date(date, wday)
+        return TopicPublisher.publish(challenge, "weekly", period,
+          I18n.t("daily_challenge.daily_topic.weekly_title", name: challenge.display_name, date: period.iso8601), build_post_body(challenge))
+      end
       topic = challenge.topic
       return unless topic
 
@@ -26,11 +33,11 @@ module DiscourseDailyChallenge
       rows = build_leaderboard_rows(challenge, use_medals: false)
 
       header = <<~MD
-        #{I18n.t("daily_challenge.weekly_post.heading", title: challenge.topic.title)}
+        #{I18n.t("daily_challenge.weekly_post.heading", title: challenge.display_name)}
 
         **#{I18n.t("daily_challenge.weekly_post.period", start: week_start.strftime("%b %-d"), finish: week_end.strftime("%b %-d, %Y"))}**
 
-        #{I18n.t("daily_challenge.weekly_post.days_elapsed", elapsed: challenge.elapsed_days, total: (challenge.end_date - challenge.start_date).to_i)}
+        #{I18n.t("daily_challenge.weekly_post.days_elapsed", elapsed: challenge.elapsed_days, total: (challenge.end_date - challenge.start_date).to_i + 1)}
 
         | | #{I18n.t("daily_challenge.weekly_post.user")} | #{I18n.t("daily_challenge.weekly_post.check_ins")} | #{I18n.t("daily_challenge.weekly_post.goal")} | #{I18n.t("daily_challenge.weekly_post.progress")} |
         |:---:|---|:---:|:---:|:---:|
@@ -43,7 +50,7 @@ module DiscourseDailyChallenge
           rows.join("\n")
         end
 
-      header + body + "\n\n#{I18n.t("daily_challenge.weekly_post.footer")}"
+      header + body + "\n\n#{I18n.t(challenge.daily_topics_enabled? ? "daily_challenge.daily_topic.weekly_footer" : "daily_challenge.weekly_post.footer")}"
     end
 
     def self.build_leaderboard_rows(challenge, use_medals: false)

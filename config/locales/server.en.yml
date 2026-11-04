@@ -1,5 +1,11 @@
 en:
   daily_challenge:
+    daily_topic:
+      title: "%{name} | %{date} check-in"
+      body: "**%{name}**\n\nToday is **%{date}** (%{timezone}). Reply before the end of this date to check in, once per person per day. No hashtag or image is required.\n\nOlder topics remain open for discussion, but late replies do not count. Goal: %{needed} check-ins.\n\n[Browse activity topics](%{url}) · Tag: %{tag}"
+      weekly_title: "%{name} | %{date} weekly leaderboard"
+      final_title: "%{name} | Final results"
+      weekly_footer: "Check in by replying to today’s daily topic. Replies to this report do not count."
     check_in:
       already_exists: "A check-in for this user on that date already exists."
       already_exists_this_week: "A check-in for this user already exists during that week."
@@ -33,7 +39,7 @@ en:
       onboarding_dm_body: |
         You're in! Here's what you need to know:
 
-        - **Hashtag:** #%{hashtag}
+        - **Topic tag:** %{hashtag} (reply to the current daily topic to check in)
         - **Check-ins needed:** %{check_ins_needed}
         - **Challenge ends:** %{end_date}
 
@@ -140,4 +146,4 @@ en:
     daily_challenge_enabled: "Discourse Challenges enabled"
     daily_challenge_mod_access_enabled: "Discourse Challenges mod access enabled"
     daily_challenge_category_mod_access_enabled: "Discourse Challenges category mod access enabled"
-    daily_challenge_bot_username: "Bot username for check-in confirmations, reminders, and @mention commands (leave blank to disable). Username is case-sensitive — enter it exactly as it appears in Discourse."
+    daily_challenge_bot_username: "Username of the active bot that publishes daily challenge topics, check-in confirmations, reminders and command replies. Required for daily topic activities."

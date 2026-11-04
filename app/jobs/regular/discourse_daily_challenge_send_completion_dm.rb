@@ -14,14 +14,8 @@ module Jobs
       challenge = DailyChallenge.find_by(id: args[:challenge_id])
       return unless challenge
 
-      topic = challenge.topic
-      challenge_name = topic&.title || "##{challenge.hashtag}"
-      topic_link =
-        if topic
-          "[**#{challenge_name}**](#{Discourse.base_url}/t/#{topic.slug}/#{topic.id})"
-        else
-          "**#{challenge_name}**"
-        end
+      challenge_name = challenge.display_name
+      topic_link = challenge.bot_link
 
       check_ins = DailyCheckIn.where(challenge_id: challenge.id, user_id: user.id).count
       checkin_count_text = I18n.t("daily_challenge.bot.checkin_count", count: check_ins)

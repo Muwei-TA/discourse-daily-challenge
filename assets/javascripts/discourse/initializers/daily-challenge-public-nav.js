@@ -15,7 +15,7 @@ export default {
     withPluginApi((api) => {
       api.addCommunitySectionLink({
         name: "daily-challenge-activities",
-        href: "/tag/打卡",
+        href: "/daily-challenges",
         title: i18n("daily_challenge.sidebar.title"),
         text: i18n("daily_challenge.sidebar.title"),
         icon: "flag",

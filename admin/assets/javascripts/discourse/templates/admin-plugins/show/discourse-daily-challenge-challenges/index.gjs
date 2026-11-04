@@ -49,9 +49,9 @@ export default <template>
           {{#each @model.challenges as |challenge|}}
             <tr class="daily-challenge-admin__row">
               <td>
-                <strong>#{{challenge.hashtag}}</strong>
-                {{#if challenge.topic_title}}
-                  <br /><small>{{challenge.topic_title}}</small>
+                <strong>{{challenge.name}}</strong>
+                {{#if challenge.tag_name}}
+                  <br /><small>{{challenge.tag_name}}</small>
                 {{/if}}
               </td>
               <td>{{challenge.start_date}} – {{challenge.end_date}}</td>

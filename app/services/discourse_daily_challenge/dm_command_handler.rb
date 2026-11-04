@@ -219,7 +219,7 @@ module DiscourseDailyChallenge
     end
 
     def self.challenge_label(challenge)
-      challenge.topic&.title || "##{challenge.hashtag}"
+      challenge.display_name
     end
 
     def self.reply(bot, topic_id, raw)

@@ -1,13 +1,11 @@
 import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
 import { action } from "@ember/object";
-import { debounce } from "@ember/runloop";
 import { service } from "@ember/service";
 import BackButton from "discourse/components/back-button";
 import Form from "discourse/components/form";
 import { ajax } from "discourse/lib/ajax";
 import { popupAjaxError } from "discourse/lib/ajax-error";
-import { eq } from "discourse/truth-helpers";
 import { i18n } from "discourse-i18n";
 
 const ADMIN_BASE = "/admin/plugins/discourse-daily-challenge";
@@ -25,8 +23,8 @@ export default class AdminDailyChallengeForm extends Component {
   @tracked awardBadge;
   @tracked checkInInterval;
   @tracked reminderDmsEnabled;
-  @tracked topicTitle = null;
-  @tracked topicFetchState = null; // null | "loading" | "found" | "error"
+  @tracked categories = [];
+  @tracked availableTags = [];
   _formApi = null;
 
   constructor(owner, args) {
@@ -35,9 +33,7 @@ export default class AdminDailyChallengeForm extends Component {
     this.awardBadge = args.challenge?.award_badge ?? true;
     this.checkInInterval = args.challenge?.check_in_interval ?? "daily";
     this.reminderDmsEnabled = args.challenge?.reminder_dms_enabled ?? true;
-    if (args.challenge?.topic_id) {
-      this.fetchTopicTitle(args.challenge.topic_id);
-    }
+    this.loadConfiguration();
   }
 
   get apiBase() {
@@ -60,8 +56,9 @@ export default class AdminDailyChallengeForm extends Component {
     if (this.isEditing) {
       const c = this.args.challenge;
       return {
-        topic_id: c.topic_id,
-        hashtag: c.hashtag,
+        name: c.name || c.topic_title,
+        category_id: c.category_id,
+        tag_name: c.tag_name || "",
         start_date: c.start_date,
         end_date: c.end_date,
         check_ins_needed: c.check_ins_needed,
@@ -79,8 +76,9 @@ export default class AdminDailyChallengeForm extends Component {
       };
     }
     return {
-      topic_id: "",
-      hashtag: "",
+      name: "",
+      category_id: "",
+      tag_name: "",
       start_date: "",
       end_date: "",
       check_ins_needed: 20,
@@ -90,7 +88,7 @@ export default class AdminDailyChallengeForm extends Component {
       weekly_post_hour: 9,
       award_badge: true,
       badge_name: "",
-      challenge_timezone: "UTC",
+      challenge_timezone: "Beijing",
       check_in_interval: "daily",
       week_start: "monday",
       reminder_dms_enabled: true,
@@ -302,36 +300,19 @@ export default class AdminDailyChallengeForm extends Component {
     ];
   }
 
-  async fetchTopicTitle(topicId) {
-    if (!topicId) {
-      this.topicTitle = null;
-      this.topicFetchState = null;
-      return;
-    }
-    this.topicFetchState = "loading";
-    this.topicTitle = null;
+  async loadConfiguration() {
     try {
-      const data = await ajax(`/t/${topicId}.json`);
-      this.topicTitle = data.title;
-      this.topicFetchState = "found";
-      if (this._formApi && !this._formApi.get("badge_name")) {
-        this._formApi.set("badge_name", data.title);
-      }
-    } catch {
-      this.topicTitle = null;
-      this.topicFetchState = "error";
+      const data = await ajax(`${this.apiBase}/configuration`);
+      this.categories = data.categories;
+      this.availableTags = data.tags;
+    } catch (err) {
+      popupAjaxError(err);
     }
   }
 
   @action
   registerApi(api) {
     this._formApi = api;
-  }
-
-  @action
-  handleTopicIdChange(value, { set, name }) {
-    set(name, value);
-    debounce(this, this.fetchTopicTitle, value, 500);
   }
 
   @action
@@ -406,6 +387,28 @@ export default class AdminDailyChallengeForm extends Component {
         />
       {{/if}}
 
+      {{#if @challenge.publication_error}}
+        <div role="alert" class="alert alert-error">
+          {{i18n "daily_challenge.admin.form.publication_error"}}: {{@challenge.publication_error}}
+        </div>
+      {{/if}}
+      {{#if @challenge.today_topic_url}}
+        <p><a href={{@challenge.today_topic_url}}>{{i18n "daily_challenge.admin.form.today_topic"}}</a></p>
+      {{/if}}
+      {{#if @challenge.topics_url}}
+        <p><a href={{@challenge.topics_url}}>{{i18n "daily_challenge.admin.form.all_topics"}}</a></p>
+      {{/if}}
+      {{#if @challenge.daily_topics.length}}
+        <details>
+          <summary>{{i18n "daily_challenge.admin.form.daily_topic_history"}}</summary>
+          <ul>
+            {{#each @challenge.daily_topics as |topic|}}
+              <li><a href={{topic.url}}>{{topic.title}}</a></li>
+            {{/each}}
+          </ul>
+        </details>
+      {{/if}}
+
       <Form
         @data={{this.formData}}
         @onSubmit={{this.onSubmit}}
@@ -414,44 +417,45 @@ export default class AdminDailyChallengeForm extends Component {
         as |form|
       >
         <form.Field
-          @name="topic_id"
-          @title={{i18n "daily_challenge.admin.form.topic_id"}}
-          @validation="required"
-          @type="input-number"
-          @onSet={{this.handleTopicIdChange}}
-          as |field|
-        >
-          <field.Control
-            min="1"
-            placeholder={{i18n "daily_challenge.admin.form.topic_id_placeholder"}}
-          />
-        </form.Field>
-
-        {{#if (eq this.topicFetchState "loading")}}
-          <p class="fcd-topic-preview fcd-topic-preview--loading">
-            {{i18n "daily_challenge.admin.form.topic_loading"}}
-          </p>
-        {{else if (eq this.topicFetchState "found")}}
-          <p class="fcd-topic-preview fcd-topic-preview--found">
-            {{i18n "daily_challenge.admin.form.topic_found" title=this.topicTitle}}
-          </p>
-        {{else if (eq this.topicFetchState "error")}}
-          <p class="fcd-topic-preview fcd-topic-preview--error">
-            {{i18n "daily_challenge.admin.form.topic_not_found"}}
-          </p>
-        {{/if}}
-
-        <form.Field
-          @name="hashtag"
-          @title={{i18n "daily_challenge.admin.form.hashtag"}}
+          @name="name"
+          @title={{i18n "daily_challenge.admin.form.activity_name"}}
           @validation="required"
           @type="input"
           as |field|
         >
-          <field.Control
-            placeholder={{i18n "daily_challenge.admin.form.hashtag_placeholder"}}
-          />
+          <field.Control maxlength="180" />
         </form.Field>
+
+        <form.Field
+          @name="category_id"
+          @title={{i18n "daily_challenge.admin.form.category"}}
+          @validation="required"
+          @type="select"
+          as |field|
+        >
+          <field.Control as |select|>
+            <select.Option @value="">{{i18n "daily_challenge.admin.form.choose_category"}}</select.Option>
+            {{#each this.categories as |category|}}
+              <select.Option @value={{category.id}}>{{category.name}}</select.Option>
+            {{/each}}
+          </field.Control>
+        </form.Field>
+
+        <form.Field
+          @name="tag_name"
+          @title={{i18n "daily_challenge.admin.form.topic_tag"}}
+          @validation="required"
+          @type="input"
+          as |field|
+        >
+          <field.Control list="daily-challenge-tag-options" placeholder={{i18n "daily_challenge.admin.form.topic_tag_placeholder"}} />
+        </form.Field>
+        <datalist id="daily-challenge-tag-options">
+          {{#each this.availableTags as |tag|}}
+            <option value={{tag}} />
+          {{/each}}
+        </datalist>
+        <p>{{i18n "daily_challenge.admin.form.daily_topics_help"}}</p>
 
         <form.Field
           @name="start_date"
@@ -518,34 +522,6 @@ export default class AdminDailyChallengeForm extends Component {
             placeholder={{i18n "daily_challenge.admin.form.welcome_message_placeholder"}}
             rows="4"
           />
-        </form.Field>
-
-        <form.Field
-          @name="check_in_interval"
-          @title={{i18n "daily_challenge.admin.form.check_in_interval"}}
-          @validation="required"
-          @type="select"
-          @onSet={{this.handleCheckInInterval}}
-          as |field|
-        >
-          <field.Control as |select|>
-            {{#each this.checkInIntervalOptions as |opt|}}
-              <select.Option @value={{opt.value}}>{{opt.name}}</select.Option>
-            {{/each}}
-          </field.Control>
-        </form.Field>
-
-        <form.Field
-          @name="week_start"
-          @title={{i18n "daily_challenge.admin.form.week_start"}}
-          @type="select"
-          as |field|
-        >
-          <field.Control as |select|>
-            {{#each this.weekStartOptions as |opt|}}
-              <select.Option @value={{opt.value}}>{{opt.name}}</select.Option>
-            {{/each}}
-          </field.Control>
         </form.Field>
 
         <form.Field

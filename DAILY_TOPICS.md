@@ -1,0 +1,28 @@
+# 每日独立打卡话题（2.0）
+
+管理员在挑战表单中填写活动名称、分类、话题标签、起止日期和时区，不再填写固定话题 ID。标签支持中文和 Unicode 表情（包括组合表情）；输入框可从已有标签中选择，也可输入新标签。新建标签仍需具备 Discourse 创建标签权限。
+
+配置 `daily_challenge_bot_username` 后，机器人按活动时区每天零点发布当日话题，任务每分钟检查一次。新建活动保存后立即发布当天话题，返回当日入口或可见的失败原因；服务恢复只补发当天，不补发过去的签到话题。
+
+用户在当日打卡话题回复任意正常内容即可签到，无须写 `#标签` 或上传图片。只有插件登记的每日话题且保留配置标签才计数；每个活动每人每天一次。旧帖可继续讨论，但跨天回复或编辑不会补签。修改活动标签会同步当天打卡贴；修改分类影响后续新话题，不搬动已经发布的讨论。每周榜单和最终总结是单独话题，其回复不计签到。完成目标、徽章、私信、提醒和抽奖跨整个活动累计。
+
+## 接口
+
+管理接口保留现有 `/admin/plugins/discourse-daily-challenge` 和 `/challenges` 前缀及权限。
+
+- `GET /configuration`：当前管理者可用的分类和已有标签建议。
+- `POST/PUT /challenges[/ID]`：使用 `name`、`category_id`、`tag_name`，以及现有日期、时区、目标、徽章和通知字段。
+- 活动响应增加 `name`、`tag_id`、`tag_name`、`daily_topics_enabled`、`topics_url`、`today_topic_url`、`daily_topics`、`publication_error`、`publication_error_at`。
+- `topic_id` 只保存迁移前的原始关联，供历史查阅和回滚。新活动可以为空。旧的 `hashtag` 字段不再作为每日模式的内容触发器。
+
+## 升级与回滚
+
+1. 备份生产数据库、原插件目录、活动配置及签到记录；保存原版本提交或归档。
+2. 在隔离测试容器安装代码并运行 `RAILS_ENV=production bundle exec rake db:migrate`。邮件必须禁用；测试脚本拒绝在非 `.invalid` 主机执行。
+3. 运行 `RAILS_ENV=production bundle exec rails runner plugins/discourse-daily-challenge/script/verify_daily_topics.rb`，再构建前端并核验后台页面。
+4. 生产短时停止应用进程，安装插件、执行数据库迁移、重新构建前端。运行 `script/enable_daily_topics.rb`，将进行中的旧活动切换，保留全部历史签到，并在原话题发布迁移入口。
+5. 启动应用，检查 Sidekiq 定时任务、机器人实际话题、标签筛选和统计。不存在可用机器人、分类或标签权限不足时，后台显示失败原因并自动重试，不会用系统账号冒名发帖。
+
+回滚时停止应用，恢复原插件归档及前端资源，将迁移活动的 `daily_topics_enabled` 置为 false，并恢复备份的 `topic_id` 和签到周期配置。新增数据库列与表可保留；不要删除新话题或签到行。原插件忽略新增结构，继续按原话题工作。恢复完整数据库备份会覆盖备份之后的数据，仅在单独评估后使用。
+
+标签使用原生标签 ID 和 Discourse 权限，不修改核心文件。插件创建表情标签时保留原始 Unicode，话题按 ID 赋标签；原生标签页面通过含 ID 的规范链接筛选。删除已发布的每日话题会显示发布错误，不会自动再建另一帖。

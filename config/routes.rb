@@ -5,6 +5,7 @@ DiscourseDailyChallenge::Engine.routes.draw do
 end
 
 Discourse::Application.routes.draw do
+  get "/daily-challenges" => "discourse_daily_challenge/public_challenges#index"
   scope "/admin/plugins/discourse-daily-challenge",
         constraints: StaffConstraint.new do
     get "/challenges" =>
@@ -12,6 +13,7 @@ Discourse::Application.routes.draw do
         as: :daily_challenge_admin_challenges
     post "/challenges" =>
            "discourse_daily_challenge/admin_daily_challenges#create"
+    get "/configuration" => "discourse_daily_challenge/admin_daily_challenges#configuration"
     get "/challenges/:id" =>
           "discourse_daily_challenge/admin_daily_challenges#show"
     put "/challenges/:id" =>
@@ -43,6 +45,7 @@ Discourse::Application.routes.draw do
         as: :daily_challenge_challenges_index
     post "/challenges" =>
            "discourse_daily_challenge/admin_daily_challenges#create"
+    get "/configuration" => "discourse_daily_challenge/admin_daily_challenges#configuration"
     get "/challenges/:id" =>
           "discourse_daily_challenge/admin_daily_challenges#show",
         as: :daily_challenge_challenges_show

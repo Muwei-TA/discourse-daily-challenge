@@ -4,19 +4,27 @@ class DailyChallenge < ActiveRecord::Base
   self.table_name = "daily_challenges"
   self.ignored_columns = ["num_days"]
 
-  belongs_to :topic
+  belongs_to :topic, optional: true
+  belongs_to :tag, optional: true
+  belongs_to :category, optional: true
+  has_many :publications, class_name: "DailyChallengeTopic", foreign_key: :challenge_id,
+                         dependent: :destroy
+
+  validates :name, :category, :tag, presence: true, if: :daily_topics_enabled?
+  validates :name, length: { maximum: 180 }, allow_blank: true
+  validates :check_in_interval, inclusion: { in: ["daily"] }, if: :daily_topics_enabled?
   has_many :check_ins,
            class_name: "DailyCheckIn",
            foreign_key: :challenge_id,
            dependent: :destroy
 
-  validates :topic_id, presence: true, uniqueness: true
+  validates :topic_id, presence: true, uniqueness: true, unless: :daily_topics_enabled?
   validates :hashtag,
             presence: true,
             format: {
               with: /\A\w+\z/,
               message: "only letters, digits, and underscores allowed",
-            }
+            }, unless: :daily_topics_enabled?
   validates :start_date, presence: true
   validates :end_date, presence: true
   validates :check_ins_needed,
@@ -57,6 +65,36 @@ class DailyChallenge < ActiveRecord::Base
     # end_date is inclusive, so a challenge is still active on end_date itself.
     where("start_date <= ? AND end_date >= ?", today + 1, today - 1)
   }
+
+  def local_date(time = Time.current)
+    time.in_time_zone(ActiveSupport::TimeZone[challenge_timezone] || Time.zone).to_date
+  end
+
+  def display_name
+    name.presence || topic&.title || "##{hashtag}"
+  end
+
+  def display_tag
+    daily_topics_enabled? ? tag&.name : hashtag
+  end
+
+  def today_topic
+    daily_topics_enabled? ? publications.find_by(kind: "daily", publication_date: local_date)&.topic : topic
+  end
+
+  def destination_topic
+    today_topic || publications.where(kind: "daily").order(publication_date: :desc).first&.topic || topic
+  end
+
+  def topics_url
+    tag&.url
+  end
+
+  def bot_link
+    target = daily_topics_enabled? && active? ? today_topic : destination_topic
+    url = target&.url || (daily_topics_enabled? ? "#{Discourse.base_url}/daily-challenges" : topics_url)
+    url ? "[**#{display_name}**](#{url})" : "**#{display_name}**"
+  end
 
   def active?
     tz = ActiveSupport::TimeZone[challenge_timezone] || Time.zone

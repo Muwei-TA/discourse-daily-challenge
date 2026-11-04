@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 # name: discourse-daily-challenge
-# about: Run time-limited daily challenges on your Discourse forum. Participants check in by posting with a hashtag or uploading a photo. Admins get a real-time leaderboard dashboard, automated weekly progress posts, and a final results post with optional badge awards.
-# version: 1.5.2
+# about: Run daily challenges with a tagged topic published by your bot each day. Reply on that date to check in; track activity-wide progress, leaderboards and completion badges.
+# version: 2.0.0
 # authors: R23D Printing
-# url: https://gitlab.com/r23dprinting-group/discourse-daily-challenge
+# url: https://github.com/Muwei-TA/discourse-daily-challenge
 # required_version: 2.7.0
 
 enabled_site_setting :daily_challenge_enabled
@@ -24,7 +24,7 @@ after_initialize do
   def DiscourseDailyChallenge.bot_user
     username = SiteSetting.daily_challenge_bot_username.presence
     return nil unless username
-    User.find_by(username: username)
+    User.find_by(username_lower: username.downcase)
   end
 
   add_admin_route(
@@ -35,9 +35,14 @@ after_initialize do
 
   require_relative "app/models/daily_challenge"
   require_relative "app/models/daily_check_in"
+  require_relative "app/models/daily_challenge_topic"
+  require_relative "lib/discourse_daily_challenge/tag_manager"
+  require_relative "lib/discourse_daily_challenge/topic_publisher"
+  require_relative "app/jobs/scheduled/daily_challenge_publish_topics"
   require_relative "app/serializers/daily_challenge_serializer"
   require_relative "app/serializers/daily_check_in_serializer"
   require_relative "app/controllers/discourse_daily_challenge/admin_daily_challenges_controller"
+  require_relative "app/controllers/discourse_daily_challenge/public_challenges_controller"
   require_relative "app/controllers/discourse_daily_challenge/admin_daily_check_ins_controller"
   require_relative "app/controllers/discourse_daily_challenge/admin_daily_dashboard_controller"
   require_relative "lib/discourse_daily_challenge/challenge_utils"
@@ -69,7 +74,7 @@ after_initialize do
     DiscourseDailyChallenge::DmCommandHandler.handle(post)
   end
 
-  on(:post_revised) do |post|
+  on(:post_edited) do |post|
     next unless SiteSetting.daily_challenge_enabled
     next if post.post_type != Post.types[:regular]
     user = post.user

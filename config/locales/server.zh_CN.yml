@@ -1,5 +1,11 @@
 zh_CN:
   daily_challenge:
+    daily_topic:
+      title: "%{name}｜%{date} 打卡"
+      body: "**%{name}**\n\n今天是 **%{date}**（%{timezone}）。在今天结束前回复本帖即可签到，每人每天一次，无须填写 #标签或上传图片。\n\n本帖过期后仍可讨论，但跨天回复不计签到。活动目标：%{needed} 次签到。\n\n[浏览活动话题与每日打卡贴](%{url}) · 标签：%{tag}"
+      weekly_title: "%{name}｜%{date} 每周榜单"
+      final_title: "%{name}｜最终总结"
+      weekly_footer: "请到今日打卡贴签到；本榜单的回复不计签到。"
     check_in:
       already_exists: "该用户在这一天已有签到记录。"
       already_exists_this_week: "该用户在这一周已有签到记录。"
@@ -33,7 +39,7 @@ zh_CN:
       onboarding_dm_body: |
         你已加入挑战！以下是活动信息：
 
-        - **签到标签：** #%{hashtag}
+        - **话题标签：** %{hashtag}（在当日打卡贴回复即可签到）
         - **达标所需签到次数：** %{check_ins_needed}
         - **活动结束日期：** %{end_date}
 
@@ -134,4 +140,4 @@ zh_CN:
     daily_challenge_enabled: "启用挑战活动插件"
     daily_challenge_mod_access_enabled: "允许全站版主管理挑战活动"
     daily_challenge_category_mod_access_enabled: "允许分类版主管理所属分类的挑战活动"
-    daily_challenge_bot_username: "用于发送签到确认、提醒和响应 @提及指令的机器人用户名（留空则关闭）。用户名区分大小写，请与社区中显示的用户名保持一致。"
+    daily_challenge_bot_username: "发布每日打卡贴、签到确认、提醒和指令回复的机器人用户名。每日独立话题活动必须配置可用机器人。"
